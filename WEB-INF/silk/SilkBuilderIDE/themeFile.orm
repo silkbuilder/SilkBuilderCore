@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm queryType="folder" >
+
+	<table >
+		<column name="fileID" type="S" pk="1" />
+		<column name="filePath" type="S" />
+		<column name="folderPath" type="S" />
+		<column name="fileName" type="S" />
+		<column name="size" type="I" />
+		<column name="type" type="S" />
+		<column name="content" type="S" />
+	</table>
+
+	<schema silkDatabaseID="0" />
+
+	<sqlSelect name="themeFolder" >
+		<![CDATA[
+			select
+				fileID,
+				fileName
+			from /silk/theme/$P{silkSystemUUID}
+			where fileName <> 'email-template'
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="themeFiles" >
+		<![CDATA[
+			select
+				fileID,
+				fileName
+			from /silk/theme/$P{silkSystemUUID}/$P{themeName}/
+			where type='F'
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="themeFile" >
+		<![CDATA[
+			select
+				fileID,
+				fileName,
+				content
+			from /silk/theme/$P{silkSystemUUID}/$P{themeName}/
+			where fileID = $P{fileID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="themeSelection" >
+		<![CDATA[
+			select
+				fileID,
+				fileName
+			from /silk/theme/$P{silkSystemUUID}
+			where fileName <> 'email-template'
+			and type='D'
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="emailFolder" >
+		<![CDATA[
+			select
+				fileID,
+				fileName
+			from /silk/theme/$P{silkSystemUUID}/email-template
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="emailFile" >
+		<![CDATA[
+			select
+				fileID,
+				fileName,
+				content
+			from /silk/theme/$P{silkSystemUUID}/email-template/
+			where fileID = $P{fileID}
+		]]>
+	</sqlSelect>
+
+</orm>

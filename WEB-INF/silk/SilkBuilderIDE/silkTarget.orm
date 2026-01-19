@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm >
+
+	<table name="silkTarget" >
+		<column name="silkTargetID" type="I" pk="1" />
+		<column name="silkSystemID" type="I" secure="1" />
+		<column name="targetURL" type="S" />
+		<column name="langList" type="S" />
+		<column name="defaultLangID" type="S" />
+		<column name="accessToken" type="S" />
+		<column name="targetdb" type="S" />
+		<column name="targetdb1" type="S" />
+		<column name="targetdb2" type="S" />
+		<column name="targetdb3" type="S" />
+		<column name="targetdb4" type="S" />
+		<column name="syncDate" type="D" />
+		<column name="operationAction" type="S" opAction="1" />
+		<column name="operationDate" type="D" />
+		<column name="operationUser" type="I" opUser="1" />
+	</table>
+
+	<schema silkDatabaseID="2" />
+	<schema silkDatabaseID="1" />
+	<schema silkDatabaseID="3" />
+	<schema silkDatabaseID="4" />
+
+	<sqlSelect name="targetList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				*
+			from silkTarget
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				*
+			from silkTarget
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				*
+			from silkTarget
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				*
+			from silkTarget
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetURL" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				sy.silkSystemUUID,
+				tr.targetURL,
+				tr.accessToken,
+				tr.targetdb,
+				tr.targetdb1,
+				tr.targetdb2,
+				tr.targetdb3,
+				tr.targetdb4
+			from silkTarget tr
+			join silkSystem sy on tr.silkSystemID = sy.silkSystemID
+			where tr.silkTargetID = $P{silkTargetID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetURL" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				sy.silkSystemUUID,
+				tr.targetURL,
+				tr.accessToken,
+				tr.targetdb,
+				tr.targetdb1,
+				tr.targetdb2,
+				tr.targetdb3,
+				tr.targetdb4
+			from silkTarget tr
+			join silkSystem sy on tr.silkSystemID = sy.silkSystemID
+			where tr.silkTargetID = $P{silkTargetID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetURL" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				sy.silkSystemUUID,
+				tr.targetURL,
+				tr.accessToken,
+				tr.targetdb,
+				tr.targetdb1,
+				tr.targetdb2,
+				tr.targetdb3,
+				tr.targetdb4
+			from silkTarget tr
+			join silkSystem sy on tr.silkSystemID = sy.silkSystemID
+			where tr.silkTargetID = $P{silkTargetID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetURL" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				sy.silkSystemUUID,
+				tr.targetURL,
+				tr.accessToken,
+				tr.targetdb,
+				tr.targetdb1,
+				tr.targetdb2,
+				tr.targetdb3,
+				tr.targetdb4
+			from silkTarget tr
+			join silkSystem sy on tr.silkSystemID = sy.silkSystemID
+			where tr.silkTargetID = $P{silkTargetID}
+		]]>
+	</sqlSelect>
+
+	<sqlOperation silkDatabaseID="2" name="updateSyncDate" >
+		<![CDATA[
+			update silkTarget set
+				syncDate = CURRENT_TIMESTAMP
+			where silkSystemID = $P{silkSystemID}
+			and silkTargetID = $P{silkTargetID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="updateSyncDate" >
+		<![CDATA[
+			update silkTarget set
+				syncDate = CURRENT_TIMESTAMP
+			where silkSystemID = $P{silkSystemID}
+			and silkTargetID = $P{silkTargetID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="updateSyncDate" >
+		<![CDATA[
+			update silkTarget set
+				syncDate = CURRENT_TIMESTAMP
+			where silkSystemID = $P{silkSystemID}
+			and silkTargetID = $P{silkTargetID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="updateSyncDate" >
+		<![CDATA[
+			update silkTarget set
+				syncDate = CURRENT_TIMESTAMP
+			where silkSystemID = $P{silkSystemID}
+			and silkTargetID = $P{silkTargetID}
+		]]>
+	</sqlOperation>
+
+</orm>

@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm >
+
+	<table name="silkTesting" >
+		<column name="silkTestingID" type="I" pk="1" />
+		<column name="silkDeveloperID" type="I" secure="1" />
+		<column name="silkSystemID" type="I" secure="1" />
+		<column name="testName" type="S" />
+		<column name="silkUserID" type="S" />
+		<column name="variableList" type="S" />
+		<column name="roleList" type="S" />
+		<column name="position" type="I" order="1" />
+	</table>
+
+	<schema silkDatabaseID="2" />
+	<schema silkDatabaseID="1" />
+	<schema silkDatabaseID="3" />
+	<schema silkDatabaseID="4" />
+
+	<sqlSelect name="sessionList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				silkTestingID,
+				silkDeveloperID,
+				silkSystemID,
+				testName,
+				silkUserID,
+				variableList,
+				roleList,
+				position
+			from silkTesting
+			where silkDeveloperID = $P{silkDevID}
+			and silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sessionList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkTestingID,
+				silkDeveloperID,
+				silkSystemID,
+				testName,
+				silkUserID,
+				variableList,
+				roleList,
+				position
+			from silkTesting
+			where silkDeveloperID = $P{silkDevID}
+			and silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sessionList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkTestingID,
+				silkDeveloperID,
+				silkSystemID,
+				testName,
+				silkUserID,
+				variableList,
+				roleList,
+				position
+			from silkTesting
+			where silkDeveloperID = $P{silkDevID}
+			and silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sessionList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkTestingID,
+				silkDeveloperID,
+				silkSystemID,
+				testName,
+				silkUserID,
+				variableList,
+				roleList,
+				position
+			from silkTesting
+			where silkDeveloperID = $P{silkDevID}
+			and silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+</orm>

@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm >
+
+	<table pkMode="value" name="silkDatabase" >
+		<column name="silkDatabaseID" type="I" pk="1" secure="0" />
+		<column name="databaseName" type="S" />
+		<column name="shortName" type="S" />
+		<column name="databaseController" type="S" />
+		<column name="silkSystemID" type="I" secure="1" />
+		<column name="silkProjectID" type="I" secure="1" />
+	</table>
+
+	<schema silkDatabaseID="2" />
+	<schema silkDatabaseID="1" />
+	<schema silkDatabaseID="3" />
+	<schema silkDatabaseID="4" />
+
+	<sqlSelect name="databaseList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				*
+			from silkDatabase
+			order by silkDatabaseID
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="databaseList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				*
+			from silkDatabase
+			order by silkDatabaseID
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="databaseList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				*
+			from silkDatabase
+			order by silkDatabaseID
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="databaseList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				*
+			from silkDatabase
+			order by silkDatabaseID
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetDatabaseList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				case when db.silkDatabaseID=sy.silkDatabaseID then 0 else 1 end as position,
+				db.silkDatabaseID,
+				db.databaseName,
+				db.shortName
+			from silkDatabase db
+			join silkSystem sy on sy.databaseList like concat('%,',db.silkDatabaseID,',%')
+			where sy.silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetDatabaseList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				case when db.silkDatabaseID=sy.silkDatabaseID then 0 else 1 end as position,
+				db.silkDatabaseID,
+				db.databaseName
+			from silkDatabase db
+			join silkSystem sy on sy.databaseList like '%,'+convert(varchar,db.silkDatabaseID)+',%'
+			where sy.silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetDatabaseList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				case when db.silkDatabaseID=sy.silkDatabaseID then 0 else 1 end as position,
+				db.silkDatabaseID,
+				db.databaseName,
+				db.shortName
+			from silkDatabase db
+			join silkSystem sy on sy.databaseList like concat('%,',db.silkDatabaseID,',%')
+			where sy.silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="targetDatabaseList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				case when db.silkDatabaseID=sy.silkDatabaseID then 0 else 1 end as position,
+				trunc(db.silkDatabaseID) as silkDatabaseID,
+				db.databaseName,
+				db.shortName
+			from silkDatabase db
+			join silkSystem sy on sy.databaseList like '%,'||db.silkDatabaseID||',%'
+			where sy.silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="databaseProject" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				sy.systemName,
+				pj2.projectName as containerName,
+				pj1.projectName,
+				pj1.projectLevel
+			from silkProject pj1
+			left join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			where pj1.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="databaseProject" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				sy.systemName,
+				pj2.projectName as containerName,
+				pj1.projectName,
+				pj1.projectLevel
+			from silkProject pj1
+			left join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			where pj1.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="databaseProject" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				sy.systemName,
+				pj2.projectName,
+				pj1.projectName,
+				pj1.projectLevel
+			from silkProject pj1
+			left join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			where pj1.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="databaseProject" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				sy.systemName,
+				pj2.projectName,
+				pj1.projectName,
+				pj1.projectLevel
+			from silkProject pj1
+			left join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			where pj1.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tableColumns" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				uuid() as id,
+				column_name as columnName,
+				case 
+					when column_type='int' then 'I'
+					when column_type='tinyint' then 'I'
+					when column_type like 'smallint%' then 'I'
+					when column_type like 'mediumint%' then 'I'
+					when column_type like 'integer%' then 'I'
+					when column_type like 'bigint%' then 'I'
+					when column_type like 'float%' then 'N'
+					when column_type like 'double%' then 'N'
+					when column_type like 'dec%' then 'N'
+					when column_type like 'year' then 'D'
+					when column_type like 'date%' then 'D'
+					when column_type like 'time%' then 'D'
+					when column_type='timestamp' then 'D'
+					else 'S'
+				end as type,
+				case when column_key='PRI' then 1 else 0 end as pk,
+				
+				column_type as sqlType$V{databaseEngine},
+				coalesce(column_default,'') as defaultType$V{databaseEngine}
+			from information_schema.columns
+			where table_schema = '$V{databaseName}'
+			and table_name = '$V{tableName}'
+			order by ordinal_position
+		]]>
+	</sqlSelect>
+
+</orm>

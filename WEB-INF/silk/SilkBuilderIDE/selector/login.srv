@@ -1,0 +1,106 @@
+<%--
+    Copyright (c) 2025 OopsClick LLC. All rights reserved.
+    this work is licensed under the O'Saasy License Agreement, a copy of which can be
+    found in the LICENSE file in the root directory of this project or at https://silkbuilder.com/core-license.
+--%>
+<%@ taglib uri="/WEB-INF/silk.tld" prefix="silk" %>
+<%@page contentType="text/html;charset=UTF-8" %>
+<silk:App title="Sing In" timeout="false" loader="false" theme="builder" >
+
+	<style>
+		main {
+			width: 100%;
+			position: absolute;
+			top: 25%;
+		}
+	</style>
+
+	<main>
+		<h3 id="hostName" class="text-center" ></h3>
+		
+		<div class="login-box py-4 mx-auto text-center" style="max-width:300px" >
+			
+			<h5>Enter the Admin Password</h5>
+			
+			<silk:Form id="loginForm" submitBt="loginBt" mode="true" >
+				<silk:Input id="password" type="password"  placeholder="Password" required="true" />
+			</silk:Form>
+			
+			<div >
+				<silk:Button id="loginBt" label="Sign In" width="100%" icon="fas fa-lock-open" />
+			</div>
+	
+		</div>
+	</main>
+
+	<silk:JQcode>
+
+		/*
+		 * Get hostname path to show in page
+		 */
+		let hostPath = window.location.hostname+window.location.pathname;
+		hostPath = hostPath.slice(0, -1);
+		$("#hostName").html("SilkBuilderCore @ "+hostPath);
+		
+		/*
+		 * Monitors the ENTER key in the password input to trigger a submit event.
+		 */
+		loginForm.password.on("keyup", function(e){
+			if( e.code=="Enter" || e.code=="NumpadEnter" ) loginForm.doSubmit();
+		});
+		
+	</silk:JQcode>
+	
+	<silk:JQcode desc="Plain Authentication" >
+		
+		/*
+		 * Process a simple login using email address and password
+		 */
+		loginForm.on("submit", function(){
+			/*
+			 * Disables the login form to avoid data change.
+			 */
+			loginForm.setDisable();
+
+			/*
+			 * Send the form content to the authentication service.
+			 */
+			loginForm.post("{contextPath}/link/SilkBuilderIDE/selector/plain",function(result,response){
+				if( result ){
+					/*
+					 * If the result is true, the service executed without errors.
+					 */
+					if( response.authStatus ){
+						/*
+						 * If authStatus is true, the authentication was successful.
+						 * The index is reloaded to load the application's menu page.
+						 */
+						window.location.href = "{contextPath}/";
+					} else {
+						/*
+						 * If authStatus is false, the authentication process failed.
+						 * The form is activated and cleaned for another try.
+						 * An authentication failed message is displayed.
+						 */
+						loginForm.setEnable();
+						loginForm.clean();
+						silk.alert("Authentication Failed", "The provided credentials have been rejected. Enter valid credentials and try again.", "warning");
+					}
+				}else{
+					/*
+					 * If the result is false, the service request failed.
+					 * The form is activated and cleaned for another try.
+					 * The response object containing error details is sent to the JavaScript console.
+					 * An authentication service failed message is displayed.
+					 */
+					loginForm.setEnable();
+					loginForm.clean();
+					console.log(response);
+					silk.alert("Authentication Error", "The authentication service is not available . Try again in a few minutes. (1)", "error");
+				}
+			});
+		});
+
+	</silk:JQcode>
+	
+</silk:App>

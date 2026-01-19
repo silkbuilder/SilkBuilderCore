@@ -1,0 +1,205 @@
+<%--
+    Copyright (c) 2025 OopsClick LLC. All rights reserved.
+    this work is licensed under the O'Saasy License Agreement, a copy of which can be
+    found in the LICENSE file in the root directory of this project or at https://silkbuilder.com/core-license.
+--%>
+<%@ page import="
+		com.oopsclick.silk.dbo.DataProvider,
+		com.oopsclick.silk.security.Crypt,
+		com.oopsclick.silk.utils.SilkPath,
+		java.util.UUID
+	"
+%>
+<%
+
+	String contextPath = SilkPath.getContextPath(request);
+	
+	UUID uuid = UUID.randomUUID();
+	Crypt crypt = new Crypt();
+
+	String action = request.getParameter("action");
+	if( action==null ){
+		return;
+	}
+
+	String targetEmailAddress = request.getParameter("targetEmailAddress");
+	String accountKey = request.getParameter("accountKey");
+	String recordID = "";
+
+	String silkDeveloperID = "";
+	String sourceEmailAddress = "";
+	String tmpData = "";
+	String key1 = "";
+	String key2 = "";
+	boolean unique = true;
+	
+	String title = "";
+	String message = "";
+	int totalRecords = 0;
+
+	/*
+	 * Instantiate data provider.
+	 */
+	DataProvider developerDP = new DataProvider("/../silk/SilkBuilderIDE/silkDeveloper",session);
+
+	/*
+	 * Extract the recordID and clean accountKey.
+	 */
+	if( accountKey!=null ){
+		int post = accountKey.lastIndexOf("-");
+		recordID = accountKey.substring(post+1, accountKey.length());
+		accountKey = accountKey.substring(0, post);
+	}
+
+	
+	if( action.equals("0") ){
+
+		developerDP.setParameter("emailAddress", targetEmailAddress);
+		if( developerDP.select("developerExists") > 0 ){
+
+			/*
+			 * The email address already exists in the database.
+			 */
+			unique = false;
+			
+		} else{ 
+		
+			/*
+			 * Starts email address change.
+			 */
+			developerDP.setParameter("accountKey", uuid.toString());
+			developerDP.setParameter("targetEmailAddress", targetEmailAddress);
+			developerDP.setParameter("key1", crypt.getPublicID("1"));
+			developerDP.setParameter("key2", crypt.getPublicID("2"));
+			developerDP.exec("changeEmailStart");
+		}
+	
+	}else{
+
+		/*
+		 * Extract account information using accountKey.
+		 */
+		developerDP.setParameter("accountKey", accountKey);
+		totalRecords = developerDP.select("accountKey");
+
+		if( totalRecords > 0 ){
+
+			/*
+			 * Initializes common values.
+			 */
+			silkDeveloperID = developerDP.getStringItem("silkDeveloperID");
+			sourceEmailAddress = developerDP.getStringItem("emailAddress");
+			tmpData = developerDP.getStringItem("tmpData");
+			String[] dataArray = tmpData.split("\\|");
+			key1 = dataArray[0];
+			key2 = dataArray[1];
+			targetEmailAddress = dataArray[2];
+	
+		}else{
+
+			/*
+			 * If no records are returned, the action gets changed.
+			 */
+			action = "X";
+		}
+	
+	}
+
+	/*
+	 * Process validation request.
+	 */
+	if( action.equals("1") ){
+		
+		if( tmpData.indexOf(recordID) > -1 ){
+		
+			if( key1.equals(recordID) ){
+				key1 = "0";
+			}
+
+			if( key2.equals(recordID) ){
+				key2 = "0";
+			}
+
+			if( (key1+key2).equals("00") ){
+
+				/*
+				 * Applies email chante if two keys have been processed.
+				 */
+				developerDP.setOperationItem("tmpData", null);
+				developerDP.setOperationItem("accountKey", "");
+				developerDP.setOperationItem("emailAddress", targetEmailAddress);
+				
+			}else{
+
+				/*
+				 * Saves processed key.
+				 */
+				developerDP.setOperationItem("tmpData", key1+"|"+key2+"|"+targetEmailAddress);
+				
+			}
+			developerDP.setOperationItem("silkDeveloperID", silkDeveloperID);	
+			developerDP.setParameter("silkDevID", silkDeveloperID);
+			developerDP.update();
+
+			/*
+			 * Set message authorization accepted.
+			 */
+			title = "Authorization Received";
+			message = "<p>The authorization to change the account's email address from "+
+				sourceEmailAddress+" to "+targetEmailAddress+" has been received.</p>"+
+				"<p>You will receive an email notification once this process is completed.</p>";
+
+			/*
+			 * Sends email if process is completed.
+			 */
+			if( (key1+key2).equals("00") ){
+				developerDP.setParameter("silkDeveloperID", silkDeveloperID);
+				developerDP.setParameter("sourceEmailAddress", sourceEmailAddress);
+				developerDP.setParameter("targetEmailAddress", targetEmailAddress);
+				developerDP.exec("changeEmailCompleted");
+			}
+
+		}
+	
+	}
+
+	/*
+	 * Process cancellation.
+	 */
+	if( action.equals("9") ){
+
+		developerDP.setOperationItem("tmpData", null);
+		developerDP.setOperationItem("accountKey", "");
+		developerDP.setOperationItem("silkDeveloperID", silkDeveloperID);
+		developerDP.setParameter("silkDevID", silkDeveloperID);
+		developerDP.update();
+
+		/*
+		 * Set message process canceled.
+		 */
+		title = "Cancelation Received";
+		message = "<p>The cancellation request to change the account's email address has been executed.</p>"+
+				"<p>You will receive an email notification about this process.</p>";
+
+		/*
+		 * Send email notifying cancellation.
+		 */
+		developerDP.setParameter("silkDeveloperID", silkDeveloperID);
+		developerDP.setParameter("sourceEmailAddress", sourceEmailAddress);
+		developerDP.setParameter("targetEmailAddress", targetEmailAddress);
+		developerDP.exec("changeEmailCanceled");
+			
+	}
+
+	/*
+	 * Process redirect to the message page.
+	 */
+	if( !action.equals("0") ){
+		String url = contextPath+"/link/SilkBuilderIDE/menu/alertPage/?title="+title+"&message="+message;
+		response.sendRedirect(url);
+	}
+	
+%>
+{
+	"unique" : <%= unique %>
+}

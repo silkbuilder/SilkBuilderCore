@@ -1,0 +1,1009 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm >
+
+	<table name="silkTag" >
+		<column name="silkTagID" type="I" pk="1" />
+		<column name="silkSystemID" type="I" secure="1" />
+		<column name="parentID" type="I" secure="1" parent="1" />
+		<column name="tagLevel" type="I" level="1" />
+		<column name="tagName" type="S" />
+		<column name="tagType" type="I" />
+		<column name="tagIntValue" type="I" />
+		<column name="content" type="S" translation="1" />
+		<column name="contentType" type="I" />
+		<column name="folderOnly" type="I" />
+		<column name="position" type="I" order="1" />
+		<column name="syncDate" type="D" />
+		<column name="operationAction" type="S" opAction="1" />
+		<column name="operationDate" type="D" opDate="1" />
+		<column name="operationUser" type="I" secure="1" opUser="1" />
+		<column name="silkTargetID" type="I" secure="1" />
+	</table>
+
+	<schema silkDatabaseID="2" />
+	<schema silkDatabaseID="1" />
+	<schema silkDatabaseID="3" />
+	<schema silkDatabaseID="4" />
+
+	<sqlSelect name="silkTags" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				0 as silkTagID,
+				0 parentID,
+				0 as tagLevel,
+				'SilkBuilder Tags <i class="fas fa-tags" aria-hidden="true"></i>&nbsp;' as tagName,
+				'' as content,
+				0 as contentType,
+				1 as folderOnly,
+				0 as position,
+				'' as action
+			union	
+			select
+				pt.silkTagID,
+				pt.parentID,
+				pt.tagLevel,
+				pt.tagName,
+				$T{pt.content} as content,
+				pt.contentType,
+				pt.folderOnly,
+				pt.position,
+				'&nbsp;<i class="fa fa-bars" aria-hidden="true"></i>' as action
+			from silkTag pt
+			where pt.silkSystemID = 0
+			and pt.tagType=0
+			order by tagLevel, parentID, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="silkTags" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				0 as silkTagID,
+				0 parentID,
+				0 as tagLevel,
+				'SilkBuilder Tags <i class="fas fa-tags" aria-hidden="true"></i>&nbsp;' as tagName,
+				'' as content,
+				0 as contentType,
+				1 as folderOnly,
+				0 as position,
+				'' as action
+			union	
+			select
+				pt.silkTagID,
+				pt.parentID,
+				pt.tagLevel,
+				pt.tagName,
+				$T{pt.content} as content,
+				pt.contentType,
+				pt.folderOnly,
+				pt.position,
+				'&nbsp;<i class="fa fa-bars" aria-hidden="true"></i>' as action
+			from silkTag pt
+			where pt.silkSystemID = 0
+			and pt.tagType=0
+			order by tagLevel, parentID, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="silkTags" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				0 as silkTagID,
+				0 as parentID,
+				0 as tagLevel,
+				'SilkBuilder Tags <i class="fas fa-tags" aria-hidden="true"></i>&nbsp;' as tagName,
+				'' as content,
+				0 as contentType,
+				1 as folderOnly,
+				0 as position,
+				'' as action
+			union	
+			select
+				pt.silkTagID as silkTagID,
+				pt.parentID as parentID,
+				pt.tagLevel as tagLevel,
+				pt.tagName as tagName,
+				$T{pt.content} as content,
+				pt.contentType as contentType,
+				pt.folderOnly as folderOnly,
+				pt.position as position,
+				'&nbsp;<i class="fa fa-bars" aria-hidden="true"></i>' as action
+			from silkTag pt
+			where pt.silkSystemID = 0
+			and pt.tagType=0
+			order by tagLevel, parentID, positio", tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="silkTags" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				0 as silkTagID,
+				0 as parentID,
+				0 as tagLevel,
+				'SilkBuilder Tags <i class="fas fa-tags" aria-hidden="true"></i>&nbsp;' as tagName,
+				'' as content,
+				0 as contentType,
+				1 as folderOnly,
+				0 as position,
+				'' as action
+			union	
+			select
+				pt.silkTagID as silkTagID,
+				pt.parentID as parentID,
+				pt.tagLevel as tagLevel,
+				pt.tagName as tagName,
+				$T{pt.content} as content,
+				pt.contentType as contentType,
+				pt.folderOnly as folderOnly,
+				pt.position as position,
+				'&nbsp;<i class="fa fa-bars" aria-hidden="true"></i>' as action
+			from silkTag pt
+			where pt.silkSystemID = 0
+			and pt.tagType=0
+			order by tagLevel, parentID, positio", tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagExists" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				silkTagID
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagName = $P{tagName}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagExists" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkTagID
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagName = $P{tagName}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagExists" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkTagID
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagName = $P{tagName}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagExists" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkTagID
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagName = $P{tagName}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemTags" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				0 as silkTagID,
+				0 as parentID,
+				0 as tagLevel,
+				'System Tags <i class="fas fa-tags" aria-hidden="true"></i>&nbsp;' as tagName,
+				'' as content,
+				0 as contentType,
+				1 as folderOnly,
+				0 as position,
+				'' as action
+			union	
+			select
+				pt.silkTagID,
+				pt.parentID,
+				pt.tagLevel,
+				pt.tagName,
+				$T{pt.content} as content,
+				pt.contentType,
+				pt.folderOnly,
+				pt.position,
+				'&nbsp;<i class="fa fa-bars" aria-hidden="true"></i>' as action
+			from silkTag pt
+			where pt.silkSystemID = $P{silkSystemID}
+			and pt.tagType=0
+			order by tagLevel, parentID, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemTags" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				0 as silkTagID,
+				0 as parentID,
+				0 as tagLevel,
+				'System Tags <i class="fas fa-tags" aria-hidden="true"></i>&nbsp;' as tagName,
+				'' as content,
+				0 as contentType,
+				1 as folderOnly,
+				0 as position,
+				'' as action
+			union	
+			select
+				pt.silkTagID,
+				pt.parentID,
+				pt.tagLevel,
+				pt.tagName,
+				$T{pt.content} as content,
+				pt.contentType,
+				pt.folderOnly,
+				pt.position,
+				'&nbsp;<i class="fa fa-bars" aria-hidden="true"></i>' as action
+			from silkTag pt
+			where pt.silkSystemID = $P{silkSystemID}
+			and pt.tagType=0
+			order by tagLevel, parentID, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemTags" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				0 as silkTagID,
+				0 as parentID,
+				0 as tagLevel,
+				'System Tags <i class="fas fa-tags" aria-hidden="true"></i>&nbsp;' as tagName,
+				'' as content,
+				0 as contentType,
+				1 as folderOnly,
+				0 as position,
+				'' as action
+			union	
+			select
+				pt.silkTagID,
+				pt.parentID,
+				pt.tagLevel,
+				pt.tagName,
+				$T{pt.content} as content,
+				pt.contentType,
+				pt.folderOnly,
+				pt.position,
+				'&nbsp;<i class="fa fa-bars" aria-hidden="true"></i>' as action
+			from silkTag pt
+			where pt.silkSystemID = $P{silkSystemID}
+			and pt.tagType=0
+			order by tagLevel, parentID, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemTags" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				0 as silkTagID,
+				0 as parentID,
+				0 as tagLevel,
+				'System Tags <i class="fas fa-tags" aria-hidden="true"></i>&nbsp;' as tagName,
+				'' as content,
+				0 as contentType,
+				1 as folderOnly,
+				0 as position,
+				'' as action
+			union	
+			select
+				pt.silkTagID,
+				pt.parentID,
+				pt.tagLevel,
+				pt.tagName,
+				$T{pt.content} as content,
+				pt.contentType,
+				pt.folderOnly,
+				pt.position,
+				'&nbsp;<i class="fa fa-bars" aria-hidden="true"></i>' as action
+			from silkTag pt
+			where pt.silkSystemID = $P{silkSystemID}
+			and pt.tagType=0
+			order by tagLevel, parentID, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableGroup" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				silkTagID,
+				silkSystemID,
+				tagName
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagType = 1
+			and parentID is null
+			order by tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableGroup" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkTagID,
+				silkSystemID,
+				tagName
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagType = 1
+			and parentID is null
+			order by tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableGroup" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkTagID,
+				silkSystemID,
+				tagName
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagType = 1
+			and parentID is null
+			order by tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableGroup" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkTagID,
+				silkSystemID,
+				tagName
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagType = 1
+			and parentID is null
+			order by tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableItem" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				silkTagID,
+				parentID,
+				silkSystemID,
+				tagIntValue,
+				$T{content,en} as content_en,
+				$T{content,$V{targetLangID}} as content,
+				position,
+				tagName
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and parentID = $P{silkTagID}
+			and tagType = 1
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableItem" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkTagID,
+				parentID,
+				silkSystemID,
+				tagIntValue,
+				$T{content,en} as content_en,
+				$T{content,$V{targetLangID}} as content,
+				position,
+				tagName
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and parentID = $P{silkTagID}
+			and tagType = 1
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableItem" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkTagID,
+				parentID,
+				silkSystemID,
+				tagIntValue,
+				$T{content,en} as content_en,
+				$T{content,$V{targetLangID}} as content,
+				position,
+				tagName
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and parentID = $P{silkTagID}
+			and tagType = 1
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableItem" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkTagID,
+				parentID,
+				silkSystemID,
+				tagIntValue,
+				$T{content,en} as content_en,
+				$T{content,$V{targetLangID}} as content,
+				position,
+				tagName
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and parentID = $P{silkTagID}
+			and tagType = 1
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="appTags" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				tagName,
+				$T{content} as content
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagName in ($V{tagList})
+			union
+				select
+				tagName,
+				$T{content} as content
+			from silkTag
+			where silkSystemID = 0
+			
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="appTags" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				tagName,
+				$T{content} as content
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagName in ($V{tagList})
+			union
+				select
+				tagName,
+				$T{content} as content
+			from silkTag
+			where silkSystemID = 0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="appTags" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				tagName,
+				$T{content} as content
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagName in ($V{tagList})
+			union
+				select
+				tagName,
+				$T{content} as content
+			from silkTag
+			where silkSystemID = 0
+			
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="appTags" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				tagName,
+				$T{content} as content
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			and tagName in ($V{tagList})
+			union
+				select
+				tagName,
+				$T{content} as content
+			from silkTag
+			where silkSystemID = 0
+			
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				value,
+				$T{label} as label,
+				keyValue
+			from silkVariable
+			where groupName = $P{groupName}
+			and silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				value,
+				$T{label} as label,
+				keyValue
+			from silkVariable
+			where groupName = $P{groupName}
+			and silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				value,
+				$T{label} as label,
+				keyValue
+			from silkVariable
+			where groupName = $P{groupName}
+			and silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="variableList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				value,
+				$T{label} as label,
+				keyValue
+			from silkVariable
+			where groupName = $P{groupName}
+			and silkSystemID = $P{silkSystemID}
+			order by position
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-tags" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				case when tg.tagType=1 then tp.tagName else NULL end as groupName,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.position
+			from silkTag tg
+			left join silkTag tp on tg.parentID = tp.silkTagID
+			left join silkTarget tr on tr.silkTargetID = $P{silkTargetID}
+			where coalesce(tg.content,'') <>''
+			and tg.silkSystemID in ($P{silkSystemID},0)
+			and tg.operationDate>coalesce(tr.syncDate,2000-01-01)
+			order by tagType, groupName, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-tags" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				case when tg.tagType=1 then tp.tagName else NULL end as groupName,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.position
+			from silkTag tg
+			left join silkTag tp on tg.parentID = tp.silkTagID
+			left join silkTarget tr on tr.silkTargetID = $P{silkTargetID}
+			where coalesce(tg.content,'') <>''
+			and tg.silkSystemID in ($P{silkSystemID},0)
+			and tg.operationDate>coalesce(tr.syncDate,2000-01-01)
+			order by tagType, groupName, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-tags" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				case when tg.tagType=1 then tp.tagName else NULL end as groupName,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.position
+			from silkTag tg
+			left join silkTag tp on tg.parentID = tp.silkTagID
+			left join silkTarget tr on tr.silkTargetID = $P{silkTargetID}
+			where coalesce(tg.content,'') <>''
+			and tg.silkSystemID in ($P{silkSystemID},0)
+			and tg.operationDate>coalesce(tr.syncDate,'2000-01-01')
+			order by tagType, groupName, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-tags" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				case when tg.tagType=1 then tp.tagName else NULL end as groupName,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.position
+			from silkTag tg
+			left join silkTag tp on tg.parentID = tp.silkTagID
+			left join silkTarget tr on tr.silkTargetID = $P{silkTargetID}
+			where DBMS_LOB.COMPARE(nvl(tg.content,TO_CLOB('')), TO_CLOB('')) <> 0
+			and tg.silkSystemID in ($P{silkSystemID},0)
+			and tg.operationDate>nvl(tr.syncDate,'2000-01-01')
+			order by tagType, groupName, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-full-tags" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				case when tg.tagType=1 then tp.tagName else NULL end as groupName,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.position
+			from silkTag tg
+			left join silkTag tp on tg.parentID = tp.silkTagID
+			where coalesce(tg.content,'') <>''
+			and tg.silkSystemID in ($P{silkSystemID},0)
+			order by tagType, groupName, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-full-tags" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				case when tg.tagType=1 then tp.tagName else NULL end as groupName,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.position
+			from silkTag tg
+			left join silkTag tp on tg.parentID = tp.silkTagID
+			where coalesce(tg.content,'') <>''
+			and tg.silkSystemID in ($P{silkSystemID},0)
+			order by tagType, groupName, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-full-tags" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				case when tg.tagType=1 then tp.tagName else NULL end as groupName,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.position
+			from silkTag tg
+			left join silkTag tp on tg.parentID = tp.silkTagID
+			where coalesce(tg.content,'') <>''
+			and tg.silkSystemID in ($P{silkSystemID},0)
+			order by tagType, groupName, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-full-tags" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				case when tg.tagType=1 then tp.tagName else NULL end as groupName,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.position
+			from silkTag tg
+			left join silkTag tp on tg.parentID = tp.silkTagID
+			where coalesce(tg.content,'') <>''
+			and tg.silkSystemID in ($P{silkSystemID},0)
+			order by tagType, groupName, position, tagName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagSystemExport" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				silkTagID as exportTagID,
+				silkSystemID as exportSystemID,
+				parentID as exportParentID,
+				tagLevel,
+				tagName,
+				tagType,
+				tagIntValue,
+				content,
+				contentType,
+				folderOnly,
+				position
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+			order by tagLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagSystemExport" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkTagID as exportTagID,
+				silkSystemID as exportSystemID,
+				parentID as exportParentID,
+				tagLevel,
+				tagName,
+				tagType,
+				tagIntValue,
+				content,
+				contentType,
+				folderOnly,
+				position
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagSystemExport" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkTagID as exportTagID,
+				silkSystemID as exportSystemID,
+				parentID as exportParentID,
+				tagLevel,
+				tagName,
+				tagType,
+				tagIntValue,
+				content,
+				contentType,
+				folderOnly,
+				position
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagSystemExport" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkTagID as exportTagID,
+				silkSystemID as exportSystemID,
+				parentID as exportParentID,
+				tagLevel,
+				tagName,
+				tagType,
+				tagIntValue,
+				content,
+				contentType,
+				folderOnly,
+				position
+			from silkTag
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagProjectExport" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			where tg.silkSystemID = $P{silkSystemID}
+			and tg.tagName in ($V{tagList})
+			union
+			select distinct
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			join silkTag ch1 on tg.silkTagID = ch1.parentID
+			where tg.silkSystemID = $P{silkSystemID}
+			and ch1.tagName in ($V{tagList})
+			union
+			select distinct
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			join silkTag ch1 on tg.silkTagID = ch1.parentID
+			join silkTag ch2 on ch1.silkTagID = ch2.parentID
+			where tg.silkSystemID = $P{silkSystemID}
+			and ch2.tagName in ($V{tagList})
+			order by tagLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagProjectExport" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			where tg.silkSystemID = $P{silkSystemID}
+			and tg.tagName in ($V{tagList})
+			union
+			select distinct
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			join silkTag ch1 on tg.silkTagID = ch1.parentID
+			where tg.silkSystemID = $P{silkSystemID}
+			and ch1.tagName in ($V{tagList})
+			union
+			select distinct
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			join silkTag ch1 on tg.silkTagID = ch1.parentID
+			join silkTag ch2 on ch1.silkTagID = ch2.parentID
+			where tg.silkSystemID = $P{silkSystemID}
+			and ch2.tagName in ($V{tagList})
+			order by tagLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagProjectExport" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			where tg.silkSystemID = $P{silkSystemID}
+			and tg.tagName in ($V{tagList})
+			union
+			select distinct
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			join silkTag ch1 on tg.silkTagID = ch1.parentID
+			where tg.silkSystemID = $P{silkSystemID}
+			and ch1.tagName in ($V{tagList})
+			union
+			select distinct
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			join silkTag ch1 on tg.silkTagID = ch1.parentID
+			join silkTag ch2 on ch1.silkTagID = ch2.parentID
+			where tg.silkSystemID = $P{silkSystemID}
+			and ch2.tagName in ($V{tagList})
+			order by tagLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="tagProjectExport" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			where tg.silkSystemID = $P{silkSystemID}
+			and tg.tagName in ($V{tagList})
+			union
+			select distinct
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			join silkTag ch1 on tg.silkTagID = ch1.parentID
+			where tg.silkSystemID = $P{silkSystemID}
+			and ch1.tagName in ($V{tagList})
+			union
+			select distinct
+				tg.silkTagID as exportTagID,
+				tg.silkSystemID as exportSystemID,
+				tg.parentID as exportParentID,
+				tg.tagLevel,
+				tg.tagName,
+				tg.tagType,
+				tg.tagIntValue,
+				tg.content,
+				tg.contentType,
+				tg.folderOnly,
+				tg.position
+			from silkTag tg
+			join silkTag ch1 on tg.silkTagID = ch1.parentID
+			join silkTag ch2 on ch1.silkTagID = ch2.parentID
+			where tg.silkSystemID = $P{silkSystemID}
+			and ch2.tagName in ($V{tagList})
+			order by tagLevel
+		]]>
+	</sqlSelect>
+
+</orm>

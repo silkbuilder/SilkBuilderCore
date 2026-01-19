@@ -1,0 +1,108 @@
+<%--
+    Copyright (c) 2025 OopsClick LLC. All rights reserved.
+    this work is licensed under the O'Saasy License Agreement, a copy of which can be
+    found in the LICENSE file in the root directory of this project or at https://silkbuilder.com/core-license.
+--%>
+<%@ page
+	import="
+		com.oopsclick.silk.dbo.DataProvider,
+		com.oopsclick.silk.security.Crypt,
+		com.oopsclick.silk.utils.SilkSession,
+		com.oopsclick.silk.utils.Http,
+		com.oopsclick.silk.utils.SilkPath,
+		com.oopsclick.silk.utils.FileTool,
+		org.jasypt.util.password.ConfigurablePasswordEncryptor,
+		java.util.concurrent.TimeUnit
+	"
+	trimDirectiveWhitespaces="true"
+	language="java"
+	contentType="application/json; charset=UTF-8"
+	pageEncoding="UTF-8"
+%>
+<%
+
+	/*
+	 * Gets the emailAddress from the request. If not provided, the process exits.
+	 */
+	String password = request.getParameter("password");
+	if( password==null ) return;
+
+	/*
+	 * Stores the authentication end result. It is initialized to "false" and changes to "true" if the authentication is successful.
+	 */
+	boolean authStatus = false;
+	
+	/*
+	 * Load user.pwd file and extracts the password.
+	 * If the file does not exist the password is empty characters.
+	 */
+	String path = SilkPath.getRealPath(request);
+	String storedPassword = FileTool.readFile(path+"WEB-INF/user.pwd");
+	
+	/*
+	 * Instantiate the Crypt library
+	 */
+	Crypt crypt = new Crypt();
+
+	/*
+	 * Check the password against the hash password against the provided password.
+	 */
+	if( storedPassword.equals("admin") ){
+		authStatus = true;
+	}else{
+		authStatus = crypt.checkPassword(password, storedPassword);
+	}
+
+	/*
+	 * Proces if authStatus is true
+	 */
+	if( authStatus ){
+
+		/*
+		 * Loads the session's data necessary to create the silkSessionToken to identify the session.
+		 */
+		String httpSession = request.getSession().getId();
+		String ipAddress = Http.getClientIpAddr(request);
+		String userAgent = request.getHeader("User-Agent");
+		
+		/*
+		 * Using the silkSession object creates a record in the silkSession table and returns the silkSessionToken.
+		 */
+		SilkSession silkSession = new SilkSession(httpSession);
+		String silkSessionToken = "";
+
+		try{
+			
+			silkSessionToken = silkSession.getSessionToken("0", ipAddress, httpSession, userAgent, 0 );
+
+			/*
+			 * Loading the system required session attributes.
+			 */
+			session.setAttribute("silkSessionToken", silkSessionToken);
+			session.setAttribute("silkUserID", "0");
+			session.setAttribute("^silkUserName", "");
+			session.setAttribute("^silkDevID", "0");
+			session.setAttribute("^silkDevName", "");
+			session.setAttribute("^silkAdmin", "1");
+	
+			/*
+			 * Load here any global variable required for your system.
+			 */
+		}else{
+			response.setStatus(500);
+			authStatus = false;
+			System.out.println(e);
+		}
+
+	} // End checking password validation
+		
+	/*
+	 * If the login attempt fails, the response is delayed 2 seconds.
+	 * This slows multiple force attempts.
+	 */
+	if( !authStatus ) TimeUnit.SECONDS.sleep(2);
+	
+%>
+{
+	"authStatus":<%= authStatus %>
+}

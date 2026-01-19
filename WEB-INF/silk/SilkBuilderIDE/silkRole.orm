@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm >
+
+	<table pkMode="value" name="silkRole" >
+		<column name="silkRoleID" type="I" />
+		<column name="roleName" type="S" />
+		<column name="roleTag" type="S" />
+		<column name="roleLevel" type="I" />
+		<column name="status" type="I" />
+	</table>
+
+	<schema silkDatabaseID="2" />
+	<schema silkDatabaseID="1" />
+	<schema silkDatabaseID="3" />
+	<schema silkDatabaseID="4" />
+
+</orm>

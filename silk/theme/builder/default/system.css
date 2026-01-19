@@ -1,0 +1,13 @@
+.cm-editor {
+	font-size: 0.90em;
+	height: 100%;
+	width: 100%;
+}
+
+.btn {
+	border: 2px solid #D6D9DB;
+}
+
+.btn:hover {
+	border: 2px solid white;
+}

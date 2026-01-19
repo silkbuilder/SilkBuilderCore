@@ -1,0 +1,619 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm >
+
+	<table name="silkSystem" >
+		<column name="silkSystemID" type="I" pk="1" />
+		<column name="silkSystemUUID" type="S" />
+		<column name="systemName" type="S" />
+		<column name="theme" type="S" />
+		<column name="langList" type="S" />
+		<column name="menuLink" type="S" />
+		<column name="loginLink" type="S" />
+		<column name="databaseList" type="S" />
+		<column name="silkDatabaseID" type="I" />
+		<column name="testController" type="S" />
+		<column name="testdb" type="S" />
+		<column name="testdb1" type="S" />
+		<column name="testdb2" type="S" />
+		<column name="testdb3" type="S" />
+		<column name="testdb4" type="S" />
+		<column name="systemStatus" type="I" />
+		<column name="creationDate" type="D" />
+		<column name="operationDate" type="D" />
+		<column name="operationUser" type="I" secure="1" />
+		<column name="operationAction" type="S" />
+		<column name="silkTargetID" type="I" secure="1" />
+	</table>
+
+	<schema silkDatabaseID="2" />
+	<schema silkDatabaseID="1" />
+	<schema silkDatabaseID="3" />
+	<schema silkDatabaseID="4" />
+
+	<sqlSelect silkDatabaseID="2" >
+		<![CDATA[
+			select
+				*
+			from silkSystem
+			order by systemName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect silkDatabaseID="1" >
+		<![CDATA[
+			select
+				*
+			from silkSystem
+			order by systemName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect silkDatabaseID="3" >
+		<![CDATA[
+			select
+				*
+			from silkSystem
+			order by systemName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect silkDatabaseID="4" >
+		<![CDATA[
+			select
+				*
+			from silkSystem
+			order by systemName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				silkSystemID,
+				systemName,
+				menuLink,
+				creationDate
+			from silkSystem sy
+			where systemStatus = 0
+			order by systemName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkSystemID,
+				systemName,
+				menuLink,
+				creationDate
+			from silkSystem sy
+			order by systemName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkSystemID,
+				systemName,
+				menuLink,
+				creationDate
+			from silkSystem sy
+			order by systemName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkSystemID,
+				systemName,
+				menuLink,
+				creationDate
+			from silkSystem sy
+			order by systemName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemLoader" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				*
+			from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemLoader" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				*
+			from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemLoader" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				*
+			from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemLoader" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				*
+			from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemOptions" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				silkSystemID,
+				silkSystemID as systemID,
+				systemName
+			from silkSystem
+			order by systemName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemOptions" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkSystemID,
+				silkSystemID as systemID,
+				systemName
+			from silkSystem
+			order by systemName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemOptions" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkSystemID,
+				silkSystemID as systemID,
+				systemName
+			from silkSystem
+			order by "systemName"
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemOptions" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkSystemID,
+				silkSystemID as systemID,
+				systemName
+			from silkSystem
+			order by "systemName"
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-system" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				sy.systemName,
+				sy.theme,
+				tr.defaultLangID as langID,
+				sy.menuLink,
+				sy.loginLink
+			from silkSystem sy
+			join silkTarget tr on sy.silkSystemID = tr.silkSystemID
+				and tr.silkTargetID = $P{silkTargetID}
+			where sy.silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-system" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				sy.systemName,
+				sy.theme,
+				tr.defaultLangID as langID,
+				sy.menuLink,
+				sy.loginLink
+			from silkSystem sy
+			join silkTarget tr on sy.silkSystemID = tr.silkSystemID
+				and tr.silkTargetID = $P{silkTargetID}
+			where sy.silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-system" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				sy.systemName,
+				sy.theme,
+				tr.defaultLangID as langID,
+				sy.menuLink,
+				sy.loginLink
+			from silkSystem sy
+			join silkTarget tr on sy.silkSystemID = tr.silkSystemID
+				and tr.silkTargetID = $P{silkTargetID}
+			where sy.silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-system" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				sy.systemName,
+				sy.theme,
+				tr.defaultLangID as langID,
+				sy.menuLink,
+				sy.loginLink
+			from silkSystem sy
+			join silkTarget tr on sy.silkSystemID = tr.silkSystemID
+				and tr.silkTargetID = $P{silkTargetID}
+			where sy.silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemDbController" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				sy.silkDatabaseID,
+				coalesce(sy.testController,db.databaseController) as databaseController
+			from silkSystem sy
+			join silkDatabase db on sy.silkDatabaseID = db.silkDatabaseID
+			where sy.silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemDbController" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				sy.silkDatabaseID,
+				isNull(sy.testController,db.databaseController) as databaseController
+			from silkSystem sy
+			join silkDatabase db on sy.silkDatabaseID = db.silkDatabaseID
+			where sy.silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemDbController" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				sy.silkDatabaseID,
+				coalesce(sy.testController,db.databaseController) as databaseController
+			from silkSystem sy
+			join silkDatabase db on sy.silkDatabaseID = db.silkDatabaseID
+			where sy.silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemDbController" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				sy.silkDatabaseID,
+				nvl(sy.testController,db.databaseController) as databaseController
+			from silkSystem sy
+			join silkDatabase db on sy.silkDatabaseID = db.silkDatabaseID
+			where sy.silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemExport" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				silkSystemID as exportSystemID,
+				silkSystemUUID,
+				systemName,
+				theme,
+				langList,
+				menuLink,
+				loginLink,
+				databaseList,
+				silkDatabaseID,
+				testController,
+				testdb,
+				testdb1,
+				testdb2,
+				testdb3,
+				testdb4
+			from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemExport" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkSystemID as exportSystemID,
+				silkSystemUUID,
+				systemName,
+				theme,
+				langList,
+				menuLink,
+				loginLink,
+				databaseList,
+				silkDatabaseID,
+				testController,
+				testdb,
+				testdb1,
+				testdb2,
+				testdb3,
+				testdb4
+			from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemExport" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkSystemID as exportSystemID,
+				silkSystemUUID,
+				systemName,
+				theme,
+				langList,
+				menuLink,
+				loginLink,
+				databaseList,
+				silkDatabaseID,
+				testController,
+				testdb,
+				testdb1,
+				testdb2,
+				testdb3,
+				testdb4
+			from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemExport" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkSystemID as exportSystemID,
+				silkSystemUUID,
+				systemName,
+				theme,
+				langList,
+				menuLink,
+				loginLink,
+				databaseList,
+				silkDatabaseID,
+				testController,
+				testdb,
+				testdb1,
+				testdb2,
+				testdb3,
+				testdb4
+			from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlSelect>
+
+	<sqlOperation silkDatabaseID="2" name="removeTags" >
+		<![CDATA[
+			delete from silkTag
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="removeTags" >
+		<![CDATA[
+			delete from silkTag
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="removeTags" >
+		<![CDATA[
+			delete from silkTag
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="removeTags" >
+		<![CDATA[
+			delete from silkTag
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="removeEmails" >
+		<![CDATA[
+			delete from silkEmail
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="removeEmails" >
+		<![CDATA[
+			delete from silkEmail
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="removeEmails" >
+		<![CDATA[
+			delete from silkEmail
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="removeEmails" >
+		<![CDATA[
+			delete from silkEmail
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="removeTesting" >
+		<![CDATA[
+			delete from silkTesting
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="removeTesting" >
+		<![CDATA[
+			delete from silkTesting
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="removeTesting" >
+		<![CDATA[
+			delete from silkTesting
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="removeTesting" >
+		<![CDATA[
+			delete from silkTesting
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="removeTranslatorTask" >
+		<![CDATA[
+			delete from silkTranslatorTask
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="removeTranslatorTask" >
+		<![CDATA[
+			delete from silkTranslatorTask
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="removeTranslatorTask" >
+		<![CDATA[
+			delete from silkTranslatorTask
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="removeTranslatorTask" >
+		<![CDATA[
+			delete from silkTranslatorTask
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="removeDeveloperSystem" >
+		<![CDATA[
+			delete from silkDeveloperSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="removeDeveloperSystem" >
+		<![CDATA[
+			delete from silkDeveloperSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="removeDeveloperSystem" >
+		<![CDATA[
+			delete from silkDeveloperSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="removeDeveloperSystem" >
+		<![CDATA[
+			delete from silkDeveloperSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="removeSystemTarget" >
+		<![CDATA[
+			delete from silkTarget
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="removeSystemTarget" >
+		<![CDATA[
+			delete from silkTarget
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="removeSystemTarget" >
+		<![CDATA[
+			delete from silkTarget
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="removeSystemTarget" >
+		<![CDATA[
+			delete from silkTarget
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="removeProject" >
+		<![CDATA[
+			delete from silkProject
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="removeProject" >
+		<![CDATA[
+			delete from silkProject
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="removeProject" >
+		<![CDATA[
+			delete from silkProject
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="removeProject" >
+		<![CDATA[
+			delete from silkProject
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="removeSystem" >
+		<![CDATA[
+			delete from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="removeSystem" >
+		<![CDATA[
+			delete from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="removeSystem" >
+		<![CDATA[
+			delete from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="removeSystem" >
+		<![CDATA[
+			delete from silkSystem
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+</orm>

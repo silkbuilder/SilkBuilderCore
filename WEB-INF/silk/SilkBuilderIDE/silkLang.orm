@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm >
+
+	<table name="silkLang" >
+		<column name="silkLangID" type="I" pk="1" secure="0" />
+		<column name="langID" type="S" />
+		<column name="langName" type="S" />
+		<column name="enName" type="S" />
+		<column name="status" type="I" />
+		<column name="silkTargetID" type="I" secure="1" />
+		<column name="silkSystemID" type="I" secure="1" />
+	</table>
+
+	<schema silkDatabaseID="2" />
+	<schema silkDatabaseID="1" />
+	<schema silkDatabaseID="3" />
+	<schema silkDatabaseID="4" />
+
+	<sqlSelect silkDatabaseID="2" >
+		<![CDATA[
+			select
+				*
+			from silkLang
+			order by enName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect silkDatabaseID="1" >
+		<![CDATA[
+			select
+				*
+			from silkLang
+			order by enName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect silkDatabaseID="3" >
+		<![CDATA[
+			select
+				*
+			from silkLang
+			order by enName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect silkDatabaseID="4" >
+		<![CDATA[
+			select
+				*
+			from silkLang
+			order by enName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemLang" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				lg.silkLangID,
+				lg.langID,
+				lg.langName,
+				lg.enName
+			from silkLang lg
+			join silkSystem sy on sy.silkSystemID = $P{silkSystemID}
+			where sy.langList like concat('%',lg.langID,'%')
+			order by enName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemLang" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				lg.silkLangID,
+				lg.langID,
+				lg.langName,
+				lg.enName
+			from silkLang lg
+			join silkSystem sy on sy.silkSystemID = $P{silkSystemID}
+			where sy.langList like '%'+langID+'%'
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemLang" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				lg.silkLangID,
+				lg.langID,
+				lg.langName,
+				lg.enName
+			from silkLang lg
+			join silkSystem sy on sy.silkSystemID = $P{silkSystemID}
+			where sy.langList like concat('%',lg.langID,'%')
+			order by enName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemLang" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				lg.silkLangID,
+				lg.langID,
+				lg.langName,
+				lg.enName
+			from silkLang lg
+			join silkSystem sy on sy.silkSystemID = $P{silkSystemID}
+			where sy.langList like '%' || lg.langID || '%'
+			order by enName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-lang" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				lg.silkLangID,
+				lg.langID,
+				lg.langName,
+				lg.enName
+			from silkLang lg
+			join silkTarget tr on tr.silkSystemID = $P{silkSystemID}
+				and tr.silkTargetID = $P{silkTargetID}
+			where tr.defaultLangID like concat('%',lg.langID,'%')
+			order by enName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-lang" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				lg.silkLangID,
+				lg.langID,
+				lg.langName,
+				lg.enName
+			from silkLang lg
+			join silkTarget tr on tr.silkSystemID = $P{silkSystemID}
+				and tr.silkTargetID = $P{silkTargetID}
+			where tr.defaultLangID like concat('%',lg.langID,'%')
+			order by enName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-lang" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				lg.silkLangID,
+				lg.langID,
+				lg.langName,
+				lg.enName
+			from silkLang lg
+			join silkTarget tr on tr.silkSystemID = $P{silkSystemID}
+				and tr.silkTargetID = $P{silkTargetID}
+			where tr.defaultLangID like concat('%',lg.langID,'%')
+			order by enName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-lang" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				lg.silkLangID,
+				lg.langID,
+				lg.langName,
+				lg.enName
+			from silkLang lg
+			join silkTarget tr on tr.silkSystemID = $P{silkSystemID}
+				and tr.silkTargetID = $P{silkTargetID}
+			where tr.defaultLangID like '%' || lg.langID || '%'
+			order by enName
+		]]>
+	</sqlSelect>
+
+</orm>

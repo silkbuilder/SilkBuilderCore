@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm >
+
+	<table name="silkCodeHistory" >
+		<column name="silkCodeHistoryID" type="I" pk="1" />
+		<column name="silkProjectID" type="I" secure="1" />
+		<column name="content" type="S" />
+		<column name="commitFlag" type="I" />
+		<column name="operationDate" type="D" />
+		<column name="operationUser" type="I" secure="1" />
+	</table>
+
+	<schema silkDatabaseID="2" />
+	<schema silkDatabaseID="1" />
+	<schema silkDatabaseID="3" />
+	<schema silkDatabaseID="4" />
+
+</orm>

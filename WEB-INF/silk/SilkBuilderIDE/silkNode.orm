@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm >
+
+	<table pkMode="value" name="silkNode" >
+		<column name="nodeType" type="S" pk="1" secure="0" />
+		<column name="name" type="S" />
+		<column name="fileName" type="S" />
+		<column name="extension" type="S" />
+		<column name="nodeLevel" type="I" />
+		<column name="parent" type="I" />
+		<column name="editor" type="I" />
+		<column name="saveMode" type="I" />
+		<column name="import" type="I" />
+		<column name="parentFilter" type="S" />
+		<column name="iconName" type="S" />
+		<column name="iconColor" type="S" />
+		<column name="template" type="S" />
+		<column name="recordOrder" type="I" />
+		<column name="sync" type="I" />
+	</table>
+
+	<schema silkDatabaseID="2" />
+	<schema silkDatabaseID="1" />
+	<schema silkDatabaseID="3" />
+	<schema silkDatabaseID="4" />
+
+	<sqlSelect name="nodeList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				*
+			from silkNode
+			order by nodeLevel, recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="nodeList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				*
+			from silkNode
+			order by nodeLevel, recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="nodeList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				*
+			from silkNode
+			order by nodeLevel, recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="nodeList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				*
+			from silkNode
+			order by nodeLevel, recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="selectList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				nodeType,
+				name,
+				parentFilter
+			from silkNode
+			order by nodeLevel, recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="selectList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				nodeType,
+				name,
+				parentFilter
+			from silkNode
+			order by nodeLevel, recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="selectList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				nodeType,
+				name,
+				parentFilter
+			from silkNode
+			order by nodeLevel, recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="selectList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				nodeType,
+				name,
+				parentFilter
+			from silkNode
+			order by nodeLevel, recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="nodeRole" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				nodeType,
+				name
+			from silkNode
+			where editor>0
+			order by recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="nodeRole" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				nodeType,
+				name
+			from silkNode
+			where editor>0
+			order by recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="nodeRole" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				nodeType,
+				name
+			from silkNode
+			where editor>0
+			order by recordOrder
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="nodeRole" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				nodeType,
+				name
+			from silkNode
+			where editor>0
+			order by recordOrder
+		]]>
+	</sqlSelect>
+
+</orm>

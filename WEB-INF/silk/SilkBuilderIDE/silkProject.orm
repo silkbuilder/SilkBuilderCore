@@ -1,0 +1,1760 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE ormObject>
+<orm >
+
+	<table name="silkProject" >
+		<column name="silkProjectID" type="I" pk="1" />
+		<column name="projectUUID" type="U" />
+		<column name="silkSystemID" type="I" secure="1" />
+		<column name="parentID" type="I" secure="1" parent="1" />
+		<column name="projectLevel" type="I" level="1" />
+		<column name="projectName" type="S" />
+		<column name="nodeType" type="S" />
+		<column name="content" type="S" />
+		<column name="lastSync" type="D" />
+		<column name="status" type="I" opStatus="1" />
+		<column name="operationAction" type="S" opAction="1" />
+		<column name="operationDate" type="D" opDate="1" />
+		<column name="operationUser" type="I" secure="1" opUser="1" />
+		<column name="silkDeveloperID" type="I" secure="1" />
+		<column name="role" type="S" />
+		<column name="projectID" type="I" secure="1" />
+		<column name="silkDevID" type="I" secure="1" />
+	</table>
+
+	<schema silkDatabaseID="2" />
+	<schema silkDatabaseID="1" />
+	<schema silkDatabaseID="3" />
+	<schema silkDatabaseID="4" />
+
+	<sqlSelect name="projectList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				pn.sync,
+				0 as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.projectLevel=0
+			and pj.status=0
+			union
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				pn.sync,
+				case
+					when $P{role}='admin' then 1
+					when $P{role}='architect' then 1
+					when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+					else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.projectLevel>0
+			and pj.status=0
+			order by projectLevel,parentID, recordOrder, projectName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				pn.sync,
+				0 as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.projectLevel=0
+			and pj.status=0
+			union
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				pn.sync,
+				case
+					when $P{role}='admin' then 1
+					when $P{role}='architect' then 1
+					when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+					else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.projectLevel>0
+			and pj.status=0
+			order by projectLevel,parentID, recordOrder, projectName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				pn.sync,
+				0 as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.projectLevel=0
+			and pj.status=0
+			union
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				pn.sync,
+				case
+					when $P{role}='admin' then 1
+					when $P{role}='architect' then 1
+					when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+					else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.projectLevel>0
+			and pj.status=0
+			order by projectLevel, parentID, recordOrder, projectName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				pn.sync,
+				0 as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.projectLevel=0
+			and pj.status=0
+			union
+			select
+				pj.silkProjectID,
+				pj.silkProjectID  as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				pn.sync,
+				case
+					when $P{role}='admin' then 1
+					when $P{role}='architect' then 1
+					when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+					else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.projectLevel>0
+			and pj.status=0
+			order by projectLevel, parentID, recordOrder, projectName
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectList-recordSync" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				case
+					when $P{role}='admin' then 1
+					when $P{role}='architect' then 1
+					when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+					else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectList-recordSync" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				case
+					when $P{role}='admin' then 1
+					when $P{role}='architect' then 1
+					when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+					else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectList-recordSync" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				case
+					when $P{role}='admin' then 1
+					when $P{role}='architect' then 1
+					when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+					else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectList-recordSync" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSync,
+				case
+					when $P{role}='admin' then 1
+					when $P{role}='architect' then 1
+					when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+					else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectRight" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				case
+					when editRights like concat('%',pr.nodeType,'%') then 1
+					when readOnly like concat('%',pr.nodeType,'%') then 0
+					else -1
+				end as rights,
+				pr.nodeType,
+				pr.silkSystemID
+			from silkDevRole rl
+			join silkProject pr on pr.silkProjectID = $P{silkProjectID}
+			where $P{roleList} like concat('%,',rl.silkDevRoleID,',%')
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectRight" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				case
+					when editRights like '%'+pr.nodeType+'%' then 1
+					when readOnly like '%'+pr.nodeType+'%' then 0
+					else -1
+				end as rights,
+				pr.nodeType,
+				pr.silkSystemID
+			from silkDevRole rl
+			join silkProject pr on pr.silkProjectID = $P{silkProjectID}
+			where $P{roleList} like '%,'+convert(varchar,rl.silkDevRoleID)+',%'
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectRight" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				case
+					when editRights like concat('%',pr.nodeType,'%') then 1
+					when readOnly like concat('%',pr.nodeType,'%') then 0
+					else -1
+				end as rights,
+				pr.nodeType,
+				pr.silkSystemID
+			from silkDevRole rl
+			join silkProject pr on pr.silkProjectID = $P{silkProjectID}
+			where $P{roleList} like concat('%,',rl.silkDevRoleID,',%')
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectRight" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				case
+					when editRights like '%'||pr.nodeType||'%' then 1
+					when readOnly like '%'||pr.nodeType||'%' then 0
+					else -1
+				end as rights,
+				pr.nodeType,
+				pr.silkSystemID
+			from silkDevRole rl
+			join silkProject pr on pr.silkProjectID = $P{silkProjectID}
+			where $P{roleList} like '%,'||rl.silkDevRoleID||',%')
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="content" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj.silkSystemID,
+				ps.systemName,
+				ps.silkDatabaseID,
+				db.databaseName,
+				pj.projectLevel,
+				pj.projectName,
+				case when pj.projectLevel=4 then p3.projectUUID else p2.projectUUID end as resourceProjectUUID,
+				case when pj.projectLevel=4 then p3.projectName else p2.projectName end as resourceProjectName,
+				coalesce(pj.content, pn.template) as content,
+				pn.nodeType,
+				concat(
+					'/',
+					case when pj.projectLevel=4 then p3.projectName else '' end,
+					'/',
+					p2.projectName,
+					'/',
+					p1.projectName,
+					'/',
+					pj.projectName
+				) as projectPath
+				
+			from silkProject pj
+			
+			join silkNode pn on pj.nodeType=pn.nodeType
+			join silkSystem ps on pj.silkSystemID=ps.silkSystemID
+			left join silkDatabase db on ps.silkDatabaseID=db.silkDatabaseID
+			
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
+			
+			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
+			and p1.status=0
+			and p2.status=0
+			and p3.status=0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="content" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj.silkSystemID,
+				ps.systemName,
+				ps.silkDatabaseID,
+				db.databaseName,
+				pj.projectLevel,
+				pj.projectName,
+				case when pj.projectLevel=4 then p3.projectUUID else p2.projectUUID end as resourceProjectUUID,
+				case when pj.projectLevel=4 then p3.projectName else p2.projectName end as resourceProjectName,
+				isNull(pj.content, pn.template) as content,
+				pn.nodeType,
+				'/'+case when pj.projectLevel=4 then p3.projectName else '' end+
+				'/'+p2.projectName+'/'+p1.projectName+'/'+pj.projectName as projectPath
+			from silkProject pj
+			
+			join silkNode pn on pj.nodeType=pn.nodeType
+			join silkSystem ps on pj.silkSystemID=ps.silkSystemID
+			left join silkDatabase db on ps.silkDatabaseID=db.silkDatabaseID
+			
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
+			
+			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
+			and p1.status=0
+			and p2.status=0
+			and p3.status=0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="content" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj.silkSystemID,
+				ps.systemName,
+				ps.silkDatabaseID,
+				db.databaseName,
+				pj.projectLevel,
+				pj.projectName,
+				case when pj.projectLevel=4 then p3.projectUUID else p2.projectUUID end as resourceProjectUUID,
+				case when pj.projectLevel=4 then p3.projectName else p2.projectName end as resourceProjectName,
+				coalesce(pj.content, pn.template) as content,
+				pn.nodeType,
+				concat(
+					'/',
+					case when pj.projectLevel=4 then p3.projectName else '' end,
+					'/',
+					p2.projectName,
+					'/',
+					p1.projectName,
+					'/',
+					pj.projectName
+				) as projectPath
+				
+			from silkProject pj
+			
+			join silkNode pn on pj.nodeType=pn.nodeType
+			join silkSystem ps on pj.silkSystemID=ps.silkSystemID
+			left join silkDatabase db on ps.silkDatabaseID=db.silkDatabaseID
+			
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
+			
+			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
+			and p1.status=0
+			and p2.status=0
+			and p3.status=0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="content" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj.silkSystemID,
+				ps.systemName,
+				ps.silkDatabaseID,
+				db.databaseName,
+				pj.projectLevel,
+				pj.projectName,
+				case when pj.projectLevel=4 then p3.projectUUID else p2.projectUUID end as resourceProjectUUID,
+				case when pj.projectLevel=4 then p3.projectName else p2.projectName end as resourceProjectName,
+				coalesce(pj.content, pn.template) as content,
+				pn.nodeType,
+				'/'||
+					case when pj.projectLevel=4 then p3.projectName else '' end||
+					'/'||
+					p2.projectName||
+					'/'||
+					p1.projectName||
+					'/'||
+					pj.projectName
+				as projectPath
+				
+			from silkProject pj
+			
+			join silkNode pn on pj.nodeType=pn.nodeType
+			join silkSystem ps on pj.silkSystemID=ps.silkSystemID
+			left join silkDatabase db on ps.silkDatabaseID=db.silkDatabaseID
+			
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
+			
+			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
+			and p1.status=0
+			and p2.status=0
+			and p3.status=0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sourceData" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj.silkSystemID,
+				pj.projectUUID as resourceUUID,
+				case
+					when pj.projectLevel=1 then pj.projectUUID
+					when pj.projectLevel=2 then p1.projectUUID 
+					when pj.projectLevel=3 then p2.projectUUID 
+					else p3.projectUUID 
+				end as projectUUID,
+				case
+					when pj.projectLevel=1 then pj.silkProjectID
+					when pj.projectLevel=2 then p1.silkProjectID 
+					when pj.projectLevel=3 then p2.silkProjectID 
+					else p3.silkProjectID 
+				end as projectID,
+				replace(case when pj.projectLevel=3 then p1.projectName else p2.projectName end,' ','_') as parentName,
+				replace(pj.projectName,' ','') as sourceName,
+				p1.projectName as moduleParent,
+				coalesce(pj.content, pn.template) as content,
+				pn.saveMode,
+				pj.projectLevel,
+				'' as treePath,
+				pn.extension,
+				pn.nodeType
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkProjectID = $P{silkProjectID} 
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sourceData" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj.silkSystemID,
+				pj.projectUUID as resourceUUID,
+				case
+					when pj.projectLevel=1 then pj.projectUUID
+					when pj.projectLevel=2 then p1.projectUUID 
+					when pj.projectLevel=3 then p2.projectUUID 
+					else p3.projectUUID 
+				end as projectUUID,
+				replace(case when pj.projectLevel=3 then p1.projectName else p2.projectName end,' ','_') as parentName,
+				replace(pj.projectName,' ','') as sourceName,
+				p1.projectName as moduleParent,
+				isNull(pj.content, pn.template) as content,
+				pn.saveMode,
+				pj.projectLevel,
+				'' as treePath,
+				pn.extension,
+				pn.nodeType
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sourceData" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj.silkSystemID,
+				pj.projectUUID,
+				case
+					when pj.projectLevel=1 then pj.projectUUID
+					when pj.projectLevel=2 then p1.projectUUID 
+					when pj.projectLevel=3 then p2.projectUUID 
+					else p3.projectUUID 
+				end as projectUUID,
+				case
+					when pj.projectLevel=1 then pj.silkProjectID
+					when pj.projectLevel=2 then p1.silkProjectID 
+					when pj.projectLevel=3 then p2.silkProjectID 
+					else p3.silkProjectID 
+				end as projectID,
+				replace(case when pj.projectLevel=3 then p1.projectName else p2.projectName end,' ','_') as parentName,
+				replace(pj.projectName,' ','') as sourceName,
+				p1.projectName as moduleParent,
+				coalesce(pj.content, pn.template) as content,
+				pn.saveMode,
+				pj.projectLevel,
+				'' as treePath,
+				pn.extension,
+				pn.nodeType
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sourceData" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj.silkSystemID,
+				pj.projectUUID,
+				case
+					when pj.projectLevel=1 then pj.projectUUID
+					when pj.projectLevel=2 then p1.projectUUID 
+					when pj.projectLevel=3 then p2.projectUUID 
+					else p3.projectUUID 
+				end as projectUUID,
+				case
+					when pj.projectLevel=1 then pj.silkProjectID
+					when pj.projectLevel=2 then p1.silkProjectID 
+					when pj.projectLevel=3 then p2.silkProjectID 
+					else p3.silkProjectID 
+				end as projectID,
+				replace(case when pj.projectLevel=3 then p1.projectName else p2.projectName end,' ','_') as parentName,
+				replace(pj.projectName,' ','') as sourceName,
+				p1.projectName as moduleParent,
+				coalesce(pj.content, pn.template) as content,
+				pn.saveMode,
+				pj.projectLevel,
+				'' as treePath,
+				pn.extension,
+				pn.nodeType
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				concat(
+					p2.projectUUID,
+					'/',
+					replace(pj.projectName,' ','')
+				) as ormPath,
+				concat('/',
+					p2.projectName,'/',
+					p1.projectName,'/',
+					pj.projectName
+				) as projectPath
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.nodeType in ('ORM','ORMF')
+			and coalesce(pj.content,'')<>''
+			and pj.silkSystemID = $P{silkSystemID}
+			order by ormPath
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				p2.projectUUID+'/'+replace(pj.projectName,' ','') as ormPath,
+				'/'+p2.projectName+'/'+p1.projectName+'/'+pj.projectName as projectPath
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.nodeType='ORM'
+			and isNull(pj.content,'')<>''
+			and pj.silkSystemID = $P{silkSystemID}
+			order by ormPath
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				concat(
+					p2.projectUUID,
+					'/',
+					replace(pj.projectName,' ','')
+				) as ormPath,
+				concat('/',
+					p2.projectName,'/',
+					p1.projectName,'/',
+					pj.projectName
+				) as projectPath
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.nodeType in ('ORM','ORMF')
+			and coalesce(pj.content,'')<>''
+			and pj.silkSystemID = $P{silkSystemID}
+			order by ormPath
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				p2.projectUUID||'/'||replace(pj.projectName,' ','') as ormPath,
+				'/'||p2.projectName||'/'||p1.projectName||'/'||pj.projectName as projectPath
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.nodeType in ('ORM','ORMF')
+			and nvl(dbms_lob.getlength(pj.content),0) <> 0
+			and pj.silkSystemID = $P{silkSystemID}
+			order by ormPath
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="dbObjectList" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj.projectName,
+				pj.nodeType,
+				pj.content
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
+			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
+			and position(
+					concat('/',$P{silkProjectID},'/') in
+					concat('/',
+						p2.silkProjectID,'/',
+						p1.silkProjectID,'/',
+						pj.silkProjectID,'/'
+					)
+				) > 0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="dbObjectList" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj.projectName,
+				pj.nodeType,
+				pj.content
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
+			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
+			and charindex(
+					concat('/',$P{silkProjectID},'/'),
+					concat('/',
+						p2.silkProjectID,'/',
+						p1.silkProjectID,'/',
+						pj.silkProjectID,'/'
+					)
+				) > 0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="dbObjectList" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj.projectName,
+				pj.nodeType,
+				pj.content
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
+			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
+			and position(
+					concat('/',$P{silkProjectID},'/') in
+					concat('/',
+						p2.silkProjectID,'/',
+						p1.silkProjectID,'/',
+						pj.silkProjectID,'/'
+					)
+				) > 0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="dbObjectList" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj.projectName,
+				pj.nodeType,
+				pj.content
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
+			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
+			and instr(
+					concat('/',$P{silkProjectID},'/'),
+					concat('/',
+						p2.silkProjectID,'/',
+						p1.silkProjectID,'/',
+						pj.silkProjectID,'/'
+					)
+				) > 0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-files" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj1.silkProjectID,
+				replace(
+					concat(
+						'/',
+						case
+							when pj1.projectLevel=3
+							then pj3.projectUUID
+							else concat(pj4.projectUUID,'/',pj3.projectName)
+						end,'/',
+						case
+							when pj1.nodeType='ORM' or pj1.nodeType='ORMF'
+							then ''
+							else concat(pj2.projectName,'/')
+						end
+					),
+					'//',
+					'/'
+				) as filePath,
+				concat(pj1.projectName,pn.extension) as fileName,
+				
+				case
+					when pj1.projectLevel=3
+					then pj3.silkProjectID
+					else pj4.silkProjectID
+				end as cleanID,
+				case
+					when pj1.projectLevel=3
+					then pj3.projectUUID
+					else pj4.projectUUID
+				end as cleanUUID,
+			
+				case
+					when pj1.nodeType='MOD' or pj1.nodeType='ORMF'
+					then 0
+					else 1
+				end as isResource,
+			
+				pj3.projectUUID as containerID,
+				pj3.projectName as containerName,
+				pj2.projectUUID as serviceID,
+				pj2.projectName as serviceName,
+				pj1.projectUUID as resourceID,
+				pj1.projectName as resourceName,
+				pj1.nodeType
+				
+			from silkProject pj1
+			join silkNode pn on pj1.nodeType = pn.nodeType
+			join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pn.import=1
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-files" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj1.silkProjectID,
+				replace(
+					'/'+
+					case
+						when pj1.projectLevel=3
+						then pj3.projectUUID
+						else pj4.projectUUID+'/'+pj3.projectName
+					end+'/'+
+					case
+						when pj1.nodeType='ORM' or pj1.nodeType='ORMF'
+						then ''
+						else pj2.projectName+'/'
+					end,
+					'//',
+					'/'
+				) as filePath,
+				pj1.projectName+pn.extension as fileName,
+				
+				case
+					when pj1.projectLevel=3
+					then pj3.silkProjectID
+					else pj4.silkProjectID
+				end as cleanID,
+				case
+					when pj1.projectLevel=3
+					then pj3.projectUUID
+					else pj4.projectUUID
+				end as cleanUUID,
+			
+				case
+					when pj1.nodeType='MOD' or pj1.nodeType='ORMF'
+					then 0
+					else 1
+				end as isResource,
+			
+				pj3.projectUUID as containerID,
+				pj3.projectName as containerName,
+				pj2.projectUUID as serviceID,
+				pj2.projectName as serviceName,
+				pj1.projectUUID as resourceID,
+				pj1.projectName as resourceName,
+				pj1.nodeType
+				
+			from dbo.silkProject pj1
+			join dbo.silkNode pn on pj1.nodeType = pn.nodeType
+			join dbo.silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join dbo.silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join dbo.silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = 1
+			and pn.import=1
+			and pj1.status=0
+			and pj1.silkSystemID = $P{silkSystemID}
+			and $P{silkProjectID} in (0,pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-files" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj1.silkProjectID,
+				replace(
+					concat(
+						'/',
+						case
+							when pj1.projectLevel=3
+							then pj3.projectUUID
+							else concat(pj4.projectUUID,'/',pj3.projectName)
+						end,'/',
+						case
+							when pj1.nodeType='ORM' or pj1.nodeType='ORMF'
+							then ''
+							else concat(pj2.projectName,'/')
+						end
+					),
+					'//',
+					'/'
+				) as filePath,
+				concat(pj1.projectName,pn.extension) as fileName,
+				
+				case
+					when pj1.projectLevel=3
+					then pj3.silkProjectID
+					else pj4.silkProjectID
+				end as cleanID,
+				case
+					when pj1.projectLevel=3
+					then pj3.projectUUID
+					else pj4.projectUUID
+				end as cleanUUID,
+			
+				case
+					when pj1.nodeType='MOD' or pj1.nodeType='ORMF'
+					then 0
+					else 1
+				end as isResource,
+			
+				pj3.projectUUID as containerID,
+				pj3.projectName as containerName,
+				pj2.projectUUID as serviceID,
+				pj2.projectName as serviceName,
+				pj1.projectUUID as resourceID,
+				pj1.projectName as resourceName,
+				pj1.nodeType
+				
+			from silkProject pj1
+			join silkNode pn on pj1.nodeType = pn.nodeType
+			join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pn.import=1
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-files" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj1.silkProjectID,
+				replace(
+					'/'||
+					case
+						when pj1.projectLevel=3
+						then pj3.projectUUID
+						else pj4.projectUUID||'/'||pj3.projectName
+					end||'/'||
+					case
+						when pj1.nodeType='ORM' or pj1.nodeType='ORMF'
+						then ''
+						else pj2.projectName||'/'
+					end,
+					'//',
+					'/'
+				) as filePath,
+				pj1.projectName||pn.extension as fileName,
+				
+				case
+					when pj1.projectLevel=3
+					then pj3.silkProjectID
+					else pj4.silkProjectID
+				end as cleanID,
+				case
+					when pj1.projectLevel=3
+					then pj3.projectUUID
+					else pj4.projectUUID
+				end as cleanUUID,
+			
+				case
+					when pj1.nodeType='MOD' or pj1.nodeType='ORMF'
+					then 0
+					else 1
+				end as isResource,
+			
+				pj3.projectUUID as containerID,
+				pj3.projectName as containerName,
+				pj2.projectUUID as serviceID,
+				pj2.projectName as serviceName,
+				pj1.projectUUID as resourceID,
+				pj1.projectName as resourceName,
+				pj1.nodeType
+				
+			from silkProject pj1
+			join silkNode pn on pj1.nodeType = pn.nodeType
+			join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pn.import=1
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-email" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				ml.emailUUID,
+				ml.langID,
+				ml.wrapper,
+				ml.sentFrom,
+				ml.replyTo,
+				ml.copyTo,
+				ml.blindTo,
+				ml.subject,
+				ml.message,
+				ml.indexValue
+			from silkEmail ml
+			join silkProject pj1 on ml.emailUUID = pj1.projectUUID
+			join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pj1.nodeType = 'EMAIL' 
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-email" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				ml.emailUUID,
+				ml.langID,
+				ml.wrapper,
+				ml.sentFrom,
+				ml.replyTo,
+				ml.copyTo,
+				ml.blindTo,
+				ml.subject,
+				ml.message,
+				ml.indexValue
+			from silkEmail ml
+			join silkProject pj1 on ml.emailUUID = pj1.projectUUID
+			join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pj1.nodeType = 'EMAIL' 
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-email" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				ml.emailUUID,
+				ml.langID,
+				ml.wrapper,
+				ml.sentFrom,
+				ml.replyTo,
+				ml.copyTo,
+				ml.blindTo,
+				ml.subject,
+				ml.message,
+				ml.indexValue
+			from silkEmail ml
+			join silkProject pj1 on ml.emailUUID = pj1.projectUUID
+			join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pj1.nodeType = 'EMAIL' 
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="sync-email" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				ml.emailUUID,
+				ml.langID,
+				ml.wrapper,
+				ml.sentFrom,
+				ml.replyTo,
+				ml.copyTo,
+				ml.blindTo,
+				ml.subject,
+				ml.message,
+				ml.indexValue
+			from silkEmail ml
+			join silkProject pj1 on ml.emailUUID = pj1.projectUUID
+			join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pj1.nodeType = 'EMAIL' 
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormPath" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj.projectUUID as containerID
+			from silkProject pj
+			where pj.projectName = $P{containerName}
+			and pj.silkSystemID = $P{silkSystemID}
+			and pj.projectLevel = 1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormPath" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj.projectUUID as containerID
+			from silkProject pj
+			where pj.projectName = $P{containerName}
+			and pj.silkSystemID = $P{silkSystemID}
+			and pj.projectLevel = 1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormPath" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj.projectUUID as containerID
+			from silkProject pj
+			where pj.projectName = $P{containerName}
+			and pj.silkSystemID = $P{silkSystemID}
+			and pj.projectLevel = 1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormPath" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj.projectUUID as containerID
+			from silkProject pj
+			where pj.projectName = $P{containerName}
+			and pj.silkSystemID = $P{silkSystemID}
+			and pj.projectLevel = 1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="getProject" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj1.projectUUID as containerID,
+				sy.theme,
+				sy.silkSystemUUID,
+				sy.testdb,
+				sy.testdb1,
+				sy.testdb2,
+				sy.testdb3,
+				sy.testdb4,
+				ts.silkUserID,
+				ts.variableList,
+				ts.roleList
+			from silkProject pj1
+			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			left join silkTesting ts on sy.silkSystemID = ts.silkSystemID
+				and ts.silkDeveloperID = $P{silkDeveloperID,0}
+				and ts.position = 0
+			where case
+					when length($P{containerName,''})=36
+					then pj1.projectUUID
+					else replace(pj1.projectName,' ','')
+				end = $P{containerName,''}
+			and pj1.silkSystemID = $P{silkSystemID}
+			and pj1.projectLevel = 1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="getProject" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj1.projectUUID as containerID,
+				sy.theme,
+				sy.silkSystemUUID,
+				sy.testdb,
+				sy.testdb1,
+				sy.testdb2,
+				sy.testdb3,
+				sy.testdb4,
+				ts.silkUserID,
+				ts.variableList,
+				ts.roleList
+			from silkProject pj1
+			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			left join silkTesting ts on sy.silkSystemID = ts.silkSystemID
+				and ts.silkDeveloperID = $P{silkDeveloperID,0}
+				and ts.position = 0
+			where case
+					when len($P{containerName,''})=36
+					then pj1.projectUUID
+					else replace(pj1.projectName,' ','')
+				end = $P{containerName,''}
+			and pj1.silkSystemID = $P{silkSystemID}
+			and pj1.projectLevel = 1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="getProject" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj1.projectUUID as containerID,
+				sy.theme,
+				sy.silkSystemUUID,
+				sy.testdb,
+				sy.testdb1,
+				sy.testdb2,
+				sy.testdb3,
+				sy.testdb4,
+				ts.silkUserID,
+				ts.variableList,
+				ts.roleList
+			from silkProject pj1
+			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			left join silkTesting ts on sy.silkSystemID = ts.silkSystemID
+				and ts.silkDeveloperID = $P{silkDeveloperID,0}
+				and ts.position = 0
+			where case
+					when length($P{containerName,''})=36
+					then pj1.projectUUID
+					else replace(pj1.projectName,' ','')
+				end = $P{containerName,''}
+			and pj1.silkSystemID = $P{silkSystemID}
+			and pj1.projectLevel = 1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="getProject" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj1.projectUUID as containerID,
+				sy.theme,
+				sy.silkSystemUUID,
+				sy.testdb,
+				sy.testdb1,
+				sy.testdb2,
+				sy.testdb3,
+				sy.testdb4,
+				ts.silkUserID,
+				ts.variableList,
+				ts.roleList
+			from silkProject pj1
+			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			left join silkTesting ts on sy.silkSystemID = ts.silkSystemID
+				and ts.silkDeveloperID = $P{silkDeveloperID,0}
+				and ts.position = 0
+			where case
+					when length($P{containerName,''})=36
+					then pj1.projectUUID
+					else replace(pj1.projectName,' ','')
+				end = $P{containerName,''}
+			and pj1.silkSystemID = $P{silkSystemID}
+			and pj1.projectLevel = 1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemExport" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				silkProjectID as exportProjectID,
+				projectUUID,
+				silkSystemID as exportSystemID,
+				parentID as exportParentID,
+				projectLevel,
+				projectName,
+				nodeType,
+				content,
+				lastSync,
+				status
+			from silkProject
+			where silkSystemID = $P{silkSystemID}
+			and status = 0
+			order by projectLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemExport" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkProjectID as exportProjectID,
+				projectUUID,
+				silkSystemID as exportSystemID,
+				parentID as exportParentID,
+				projectLevel,
+				projectName,
+				nodeType,
+				content,
+				lastSync,
+				status
+			from silkProject
+			where silkSystemID = $P{silkSystemID}
+			and status = 0
+			order by projectLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemExport" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkProjectID as exportProjectID,
+				projectUUID,
+				silkSystemID as exportSystemID,
+				parentID as exportParentID,
+				projectLevel,
+				projectName,
+				nodeType,
+				content,
+				lastSync,
+				status
+			from silkProject
+			where silkSystemID = $P{silkSystemID}
+			and status = 0
+			order by projectLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="systemExport" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkProjectID as exportProjectID,
+				projectUUID,
+				silkSystemID as exportSystemID,
+				parentID as exportParentID,
+				projectLevel,
+				projectName,
+				nodeType,
+				content,
+				lastSync,
+				status
+			from silkProject
+			where silkSystemID = $P{silkSystemID}
+			and status = 0
+			order by projectLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectExport" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj1.silkProjectID as exportProjectID,
+				pj1.projectUUID,
+				pj1.silkSystemID as exportSystemID,
+				pj1.parentID as exportParentID,
+				pj1.projectLevel,
+				pj1.projectName,
+				pj1.nodeType,
+				pj1.content,
+				pj1.lastSync,
+				pj1.status
+			from silkProject pj1
+			left join silkNode pn on pj1.nodeType = pn.nodeType
+			left join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+				and pj2.status=0
+			left join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+				and pj3.status=0
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+				and pj4.status=0
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+			order by projectLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectExport" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj1.silkProjectID as exportProjectID,
+				pj1.projectUUID,
+				pj1.silkSystemID as exportSystemID,
+				pj1.parentID as exportParentID,
+				pj1.projectLevel,
+				pj1.projectName,
+				pj1.nodeType,
+				pj1.content,
+				pj1.lastSync,
+				pj1.status
+			from silkProject pj1
+			join silkNode pn on pj1.nodeType = pn.nodeType
+			join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+			order by projectLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectExport" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj1.silkProjectID as exportProjectID,
+				pj1.projectUUID,
+				pj1.silkSystemID as exportSystemID,
+				pj1.parentID as exportParentID,
+				pj1.projectLevel,
+				pj1.projectName,
+				pj1.nodeType,
+				pj1.content,
+				pj1.lastSync,
+				pj1.status
+			from silkProject pj1
+			join silkNode pn on pj1.nodeType = pn.nodeType
+			join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+			order by projectLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectExport" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj1.silkProjectID as exportProjectID,
+				pj1.projectUUID,
+				pj1.silkSystemID as exportSystemID,
+				pj1.parentID as exportParentID,
+				pj1.projectLevel,
+				pj1.projectName,
+				pj1.nodeType,
+				pj1.content,
+				pj1.lastSync,
+				pj1.status
+			from silkProject pj1
+			join silkNode pn on pj1.nodeType = pn.nodeType
+			join silkProject pj2 on pj1.parentID = pj2.silkProjectID
+			join silkProject pj3 on pj2.parentID = pj3.silkProjectID
+			left join silkProject pj4 on pj3.parentID = pj4.silkProjectID
+			where pj1.silkSystemID = $P{silkSystemID}
+			and pj1.status=0
+			and $P{silkProjectID} in (0, pj4.silkProjectID, pj3.silkProjectID, pj2.silkProjectID, pj1.silkProjectID)
+			order by projectLevel
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectRemove" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				silkProjectID,
+				projectUUID
+			from silkProject
+			where silkSystemID = $P{silkSystemID}
+			and projectLevel=1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectRemove" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkProjectID,
+				projectUUID
+			from silkProject
+			where silkSystemID = $P{silkSystemID}
+			and projectLevel=1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectRemove" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkProjectID,
+				projectUUID
+			from silkProject
+			where silkSystemID = $P{silkSystemID}
+			and projectLevel=1
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectRemove" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkProjectID,
+				projectUUID
+			from silkProject
+			where silkSystemID = $P{silkSystemID}
+			and projectLevel=1
+		]]>
+	</sqlSelect>
+
+	<sqlOperation silkDatabaseID="2" name="updateContent" >
+		<![CDATA[
+			update silkProject set
+				content = $P{content},
+				operationAction = 'update',
+				operationDate = CURRENT_TIMESTAMP,
+				operationUser = $P{silkDevID}
+			where silkProjectID = $P{silkProjectID}
+			and status=0
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="updateContent" >
+		<![CDATA[
+			update silkProject set
+				content = $P{content},
+				operationAction = 'update',
+				operationDate = getDate(),
+				operationUser = $P{silkDevID}
+			where silkProjectID = $P{silkProjectID}
+			and status=0
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="updateContent" >
+		<![CDATA[
+			update silkProject set
+				content = $P{content},
+				operationAction = 'update',
+				operationDate = CURRENT_TIMESTAMP,
+				operationUser = $P{silkDevID}
+			where silkProjectID = $P{silkProjectID}
+			and status=0
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="updateContent" >
+		<![CDATA[
+			update silkProject set
+				content = $P{content},
+				operationAction = 'update',
+				operationDate = CURRENT_TIMESTAMP,
+				operationUser = $P{silkDevID}
+			where silkProjectID = $P{silkProjectID}
+			and status=0
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="updateContent" >
+		<![CDATA[
+			insert into silkCodeHistory (silkProjectID, content, commitFlag, operationDate, operationUser)
+			select
+				silkProjectID,
+				content,
+				$P{commitFlag,0},
+				operationDate,
+				operationUser
+			from silkProject
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="updateContent" >
+		<![CDATA[
+			insert into silkCodeHistory (silkProjectID, content, commitFlag, operationDate, operationUser)
+			select
+				silkProjectID,
+				content,
+				$P{commitFlag,0},
+				operationDate,
+				operationUser
+			from silkProject
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="updateContent" >
+		<![CDATA[
+			insert into silkCodeHistory (silkProjectID, content, commitFlag, operationDate, operationUser)
+			select
+				silkProjectID,
+				content,
+				$P{commitFlag,0},
+				operationDate,
+				operationUser
+			from silkProject
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="updateContent" >
+		<![CDATA[
+			begin
+			insert into silkCodeHistory (silkProjectID, content, commitFlag, operationDate, operationUser)
+			select
+				silkProjectID,
+				content,
+				$P{commitFlag,0},
+				operationDate,
+				operationUser
+			from silkProject
+			where silkProjectID = $P{silkProjectID};
+			end;
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="updateUUID" >
+		<![CDATA[
+			update silkProject set
+				content = replace(content, $P{oldUUID}, $P{newUUID})
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="updateUUID" >
+		<![CDATA[
+			update silkProject set
+				content = replace(content, $P{oldUUID}, $P{newUUID})
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="updateUUID" >
+		<![CDATA[
+			update silkProject set
+				content = replace(content, $P{oldUUID}, $P{newUUID})
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="updateUUID" >
+		<![CDATA[
+			update silkProject set
+				content = replace(content, $P{oldUUID}, $P{newUUID})
+			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+</orm>
