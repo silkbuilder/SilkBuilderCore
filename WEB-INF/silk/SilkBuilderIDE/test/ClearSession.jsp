@@ -39,7 +39,9 @@
 		if( attribute.equals("silkSystemUUID") ) continue;
 		if( attribute.equals("silkSystemID") ) continue;
 		if( attribute.equals("silkSessionToken") ) continue;
-		if( attribute.equals("langID") ) continue;
+		if( attribute.equals("silkTarget") ) continue;
+		if( attribute.equals("silkIdleMinutes") ) continue;
+		//if( attribute.equals("langID") ) continue;
 		if( attribute.equals("codeCounter") ) continue;
 		if( attribute.indexOf("-role")>-1 ) continue;
 		

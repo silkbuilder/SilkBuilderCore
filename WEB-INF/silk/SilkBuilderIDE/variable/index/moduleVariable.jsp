@@ -27,7 +27,7 @@
 				<silk:Column ordering="true" />
 				<silk:Column title="Value" width="50px" >{tagIntValue}</silk:Column>
 				<silk:Column title="English" >{content_en}</silk:Column>
-				<silk:Column title="Translation" >{content}</silk:Column>
+				<silk:Column id="translationColumn" title="Translation" >{content}</silk:Column>
 				<silk:Column title="Key" >{tagName}</silk:Column>
 			</silk:Table>
 			<silk:Input type="select" id="langID" dataSource="langDP"
@@ -49,8 +49,9 @@
 		</silk:Header>
 		<silk:Content>
 			<silk:Form id="itemForm" dataSource="itemList" buttonTarget="itemListPage,itemListPage" >
-				<silk:Input id="tagIntValue" type="integer" label="Value" width="50px" required="true" />
+				<silk:Input id="tagIntValue" type="integer" label="Value" width="50px" required="itemForm.tagIntValue.getValue()!=''" />
 				<silk:Input id="content" type="text" label="Label" width="350px" required="true" />
+				<silk:Input id="content_en" scope="dataProvider" />
 				<silk:Input id="tagName" type="text" label="Key" width="200px" />
 				<silk:Input id="silkSystemID" type="hidden" value="(silkSystemID)" />
 				<silk:Input id="parentID" type="hidden" value="groupList.getSelectedItem('silkTagID')" />
@@ -67,22 +68,29 @@
 		
 		itemDP.on("beforeSelect", function(){
 			this.langID = langID.getValue();
+			this.setLangID(this.langID);
 			this.setParameter("silkSystemID", silkSystemID);
 			this.setParameter("targetLangID",langID.getValue());
 			this.setParameter("silkTagID", groupList.getSelectedItem("silkTagID"));
 			itemListPage.setTitle("Variable - "+groupList.getSelectedItem().tagName);
 		});
 		
-		itemDP.on("beforeLoad", function(){
-			this.setLangID(langID.getValue());
+		itemDP.on("afterSelect", function(){
+			itemForm.setMode();
 		});
 		
-		itemForm.tagIntValue.on("modeChange", function(){
-			if( itemForm.tagIntValue.getValue()=="" && itemDP.size()==0 ) itemForm.tagIntValue.setValue("0");
+		translationColumn.on("visible", function(){
+			return langID.getValue()!="en";
 		});
 		
 		itemForm.on("showInsertBt",function(){
 			return langID.getValue()=="en" && groupDP.size()>0;
+		});
+
+		itemForm.on("submit", function(){
+			if( langID.getValue()=="en" ){
+				itemForm.content_en.setValue(itemForm.content.getValue());
+			}
 		});
 		
 	</silk:JQcode>
@@ -98,7 +106,7 @@
 		});
 			
 		langID.on("change", function(){
-			groupDP.load();
+			groupDP.select();
 		});
 
 	</silk:JQcode>

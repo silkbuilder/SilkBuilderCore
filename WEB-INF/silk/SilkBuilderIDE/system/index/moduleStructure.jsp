@@ -29,7 +29,7 @@
 			<silk:Button id="projectInfoBt" icon="fa-solid fa-circle-info" dock="right" targetPage="projectFormPage" renderIf="admin,architect one-in ${developerRole}" />
 		</silk:Header>
 		<silk:Content>
-
+			
 			<silk:Table id="projectList" dataSource="projectDP" cssClass="table-hover no-border" targetPage="editorPage" header="none"
 				collapsedLevel="<%= levelLimit %>"
 				deleteBranch="true"
