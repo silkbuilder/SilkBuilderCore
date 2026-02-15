@@ -158,14 +158,11 @@
 	<silk:JQcode>
 		
 		loginLinkBt.on("click", function(){
-			
 			if( parent.projectList.getSelectedItem().nodeType!= 'PUB' ){
 				silk.alert("Warning","The selected node is not a public application.");
 				return;
 			}
-			
-			systemForm.loginLink.setValue( getAppLink(parent.projectList.getSelectedItem().silkProjectID) );
-			
+			systemForm.loginLink.setValue( getAppLink(parent.projectList.getSelectedItem().silkProjectID)+".srv" );
 		})
 		
 		menuLinkBt.on("click", function(){
@@ -173,7 +170,7 @@
 				silk.alert("Warning","The selected node is not an application.");
 				return;
 			}
-			systemForm.menuLink.setValue( getAppLink(parent.projectList.getSelectedItem().silkProjectID) );
+			systemForm.menuLink.setValue( getAppLink(parent.projectList.getSelectedItem().silkProjectID)+".jsp" );
 		})
 		
 		getAppLink = function(id){
@@ -182,6 +179,7 @@
 			appLink = parent.projectDP.getIndexItem(parentID).projectName+"/"+appLink;
 			parentID = parent.projectDP.getIndexItem(parentID).parentID;
 			appLink = "/"+parent.projectDP.getIndexItem(parentID).projectName+"/"+appLink;
+			console.log(appLink);
 			return appLink;
 		}
 		
