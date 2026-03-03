@@ -71,9 +71,10 @@
 			select
 				case when db.silkDatabaseID=sy.silkDatabaseID then 0 else 1 end as position,
 				db.silkDatabaseID,
-				db.databaseName
+				db.databaseName,
+				db.shortName
 			from silkDatabase db
-			join silkSystem sy on sy.databaseList like '%,'+convert(varchar,db.silkDatabaseID)+',%'
+			join silkSystem sy on sy.databaseList like concat('%,',convert(varchar,db.silkDatabaseID),',%')
 			where sy.silkSystemID = $P{silkSystemID}
 			order by position
 		]]>

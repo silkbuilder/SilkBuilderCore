@@ -482,8 +482,17 @@
 				case when pj.projectLevel=4 then p3.projectName else p2.projectName end as resourceProjectName,
 				isNull(pj.content, pn.template) as content,
 				pn.nodeType,
-				'/'+case when pj.projectLevel=4 then p3.projectName else '' end+
-				'/'+p2.projectName+'/'+p1.projectName+'/'+pj.projectName as projectPath
+				concat(
+					'/',
+					case when pj.projectLevel=4 then p3.projectName else '' end,
+					'/',
+					p2.projectName,
+					'/',
+					p1.projectName,
+					'/',
+					pj.projectName
+				) as projectPath
+				
 			from silkProject pj
 			
 			join silkNode pn on pj.nodeType=pn.nodeType
@@ -555,7 +564,7 @@
 				pj.projectName,
 				case when pj.projectLevel=4 then p3.projectUUID else p2.projectUUID end as resourceProjectUUID,
 				case when pj.projectLevel=4 then p3.projectName else p2.projectName end as resourceProjectName,
-				coalesce(pj.content, pn.template) as content,
+				nvl(pj.content, pn.template) as content,
 				pn.nodeType,
 				'/'||
 					case when pj.projectLevel=4 then p3.projectName else '' end||
@@ -631,10 +640,16 @@
 					when pj.projectLevel=3 then p2.projectUUID 
 					else p3.projectUUID 
 				end as projectUUID,
+				case
+					when pj.projectLevel=1 then pj.silkProjectID
+					when pj.projectLevel=2 then p1.silkProjectID 
+					when pj.projectLevel=3 then p2.silkProjectID 
+					else p3.silkProjectID 
+				end as projectID,
 				replace(case when pj.projectLevel=3 then p1.projectName else p2.projectName end,' ','_') as parentName,
 				replace(pj.projectName,' ','') as sourceName,
 				p1.projectName as moduleParent,
-				isNull(pj.content, pn.template) as content,
+				coalesce(pj.content, pn.template) as content,
 				pn.saveMode,
 				pj.projectLevel,
 				'' as treePath,
@@ -645,7 +660,7 @@
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
 			left join silkProject p3 on p2.parentID=p3.silkProjectID
 			join silkNode pn on pj.nodeType=pn.nodeType
-			where pj.silkProjectID = $P{silkProjectID}
+			where pj.silkProjectID = $P{silkProjectID} 
 		]]>
 	</sqlSelect>
 
@@ -748,13 +763,21 @@
 		<![CDATA[
 			select
 				pj.silkProjectID,
-				p2.projectUUID+'/'+replace(pj.projectName,' ','') as ormPath,
-				'/'+p2.projectName+'/'+p1.projectName+'/'+pj.projectName as projectPath
+				concat(
+					p2.projectUUID,
+					'/',
+					replace(pj.projectName,' ','')
+				) as ormPath,
+				concat('/',
+					p2.projectName,'/',
+					p1.projectName,'/',
+					pj.projectName
+				) as projectPath
 			from silkProject pj
 			left join silkProject p1 on pj.parentID=p1.silkProjectID
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
 			join silkNode pn on pj.nodeType=pn.nodeType
-			where pj.nodeType='ORM'
+			where pj.nodeType in ('ORM','ORMF')
 			and isNull(pj.content,'')<>''
 			and pj.silkSystemID = $P{silkSystemID}
 			order by ormPath
@@ -800,6 +823,82 @@
 			and nvl(dbms_lob.getlength(pj.content),0) <> 0
 			and pj.silkSystemID = $P{silkSystemID}
 			order by ormPath
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormContent" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.content
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.nodeType in ('ORM','ORMF')
+			and coalesce(pj.content,'')<>''
+			and pj.silkSystemID = $P{silkSystemID}
+			and concat(
+					p2.projectUUID,
+					'/',
+					replace(pj.projectName,' ','')
+				) = $P{ormPath}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormContent" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.content
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.nodeType in ('ORM','ORMF')
+			and coalesce(pj.content,'')<>''
+			and pj.silkSystemID = $P{silkSystemID}
+			and concat(
+					p2.projectUUID,
+					'/',
+					replace(pj.projectName,' ','')
+				) = $P{ormPath}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormContent" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.content
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.nodeType in ('ORM','ORMF')
+			and coalesce(pj.content,'')<>''
+			and pj.silkSystemID = $P{silkSystemID}
+			and concat(
+					p2.projectUUID,
+					'/',
+					replace(pj.projectName,' ','')
+				) = $P{ormPath}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="ormContent" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.content
+			from silkProject pj
+			left join silkProject p1 on pj.parentID=p1.silkProjectID
+			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.nodeType in ('ORM','ORMF')
+			and coalesce(pj.content,'')<>''
+			and pj.silkSystemID = $P{silkSystemID}
+			and p2.projectUUID||'/'||replace(pj.projectName,' ','') = $P{ormPath}
 		]]>
 	</sqlSelect>
 
@@ -885,12 +984,12 @@
 			and pj.status=0
 			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
 			and instr(
-					concat('/',$P{silkProjectID},'/'),
-					concat('/',
-						p2.silkProjectID,'/',
-						p1.silkProjectID,'/',
-						pj.silkProjectID,'/'
-					)
+					'/' || $P{silkProjectID} || '/',
+					'/' ||
+						p2.silkProjectID || '/' ||
+						p1.silkProjectID || '/' ||
+						pj.silkProjectID || '/'
+					
 				) > 0
 		]]>
 	</sqlSelect>
@@ -1232,7 +1331,7 @@
 		]]>
 	</sqlSelect>
 
-	<sqlSelect name="ormPath" silkDatabaseID="2" >
+	<sqlSelect name="containerID" silkDatabaseID="2" >
 		<![CDATA[
 			select
 				pj.projectUUID as containerID
@@ -1243,7 +1342,7 @@
 		]]>
 	</sqlSelect>
 
-	<sqlSelect name="ormPath" silkDatabaseID="1" >
+	<sqlSelect name="containerID" silkDatabaseID="1" >
 		<![CDATA[
 			select
 				pj.projectUUID as containerID
@@ -1254,7 +1353,7 @@
 		]]>
 	</sqlSelect>
 
-	<sqlSelect name="ormPath" silkDatabaseID="3" >
+	<sqlSelect name="containerID" silkDatabaseID="3" >
 		<![CDATA[
 			select
 				pj.projectUUID as containerID
@@ -1265,7 +1364,7 @@
 		]]>
 	</sqlSelect>
 
-	<sqlSelect name="ormPath" silkDatabaseID="4" >
+	<sqlSelect name="containerID" silkDatabaseID="4" >
 		<![CDATA[
 			select
 				pj.projectUUID as containerID

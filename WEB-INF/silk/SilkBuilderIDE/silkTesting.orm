@@ -11,6 +11,7 @@
 		<column name="variableList" type="S" />
 		<column name="roleList" type="S" />
 		<column name="position" type="I" order="1" />
+		<column name="silkDevID" type="I" secure="1" />
 	</table>
 
 	<schema silkDatabaseID="2" />

@@ -10,5 +10,5 @@
 <jsp:include page="../../../silk/service/view/dataProvider.jsp" >
 	<jsp:param name="ormPath" value="../silk/SilkBuilderIDE/silkProject" />
 	<jsp:param name="accessRights" value=",S,I,U,D," />
-	<jsp:param name="selectList" value=",projectList,projectList-recordSync,ormList,dbObjectList,sync-files," />
+	<jsp:param name="selectList" value=",projectList,projectList-recordSync,ormList,ormContent,dbObjectList,sync-files," />
 </jsp:include>

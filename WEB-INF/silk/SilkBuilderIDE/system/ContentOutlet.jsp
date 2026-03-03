@@ -10,6 +10,6 @@
 <jsp:include page="../../../silk/service/view/dataProvider.jsp" >
 	<jsp:param name="ormPath" value="../silk/SilkBuilderIDE/silkProject" />
 	<jsp:param name="accessRights" value=",S,U,D," />
-	<jsp:param name="selectList" value=",content," />
+	<jsp:param name="selectList" value=",content,ormContent" />
 	<jsp:param name="operationList" value=",updateContent," />
 </jsp:include>

@@ -25,8 +25,6 @@
 		>
 			<silk:Header>
 				Outlet Editor.
-				<silk:Button id="executeBt" icon="fa-solid fa-circle-play" dock="right" renderIf="${editRight}" />
-				<silk:Button id="reloadBt" icon="fa-solid fa-rotate-right" dock="right" renderIf="${editRight}" />
 			</silk:Header>
 			<silk:Content>
 				<silk:Form id="outletForm" dataSource="outletDP" buttonTarget="none,outletPage,none" buttonTest="${editRight}" >
@@ -80,25 +78,24 @@
 			</silk:Content>		
 		</silk:Page>
 		
-		<silk:Modal id="ormModal" title="Select ORM" closeButton="false" >
+		<silk:Modal id="ormModal" title="Select ORM" >
 			<silk:ModalBody>
-				<silk:Table id="ormList" dataSource="ormDP" header="none" >
+				<silk:Table id="ormList" dataSource="ormDP" header="none" searchable="true" autoSelect="false" >
 					<silk:Column>{projectPath}</silk:Column>
+					<silk:Column icon="fa-solid fa-angle-right" align="right" />
 				</silk:Table>
 			</silk:ModalBody>
-			<silk:ModalFooter>
-				 <button id="ormCloseBt" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<silk:Button id="ormSelectBt" label="Select ORM" />
-			</silk:ModalFooter>
 		</silk:Modal>
 		
 	</silk:Screen>
 	
-	<silk:DataProvider id="ormDP" servicePath="/SilkBuilderIDE/system/ProjectOutlet" selectName="ormList" loadingOrder="1" />
-	<silk:DataProvider id="contentDP" servicePath="/SilkBuilderIDE/system/ContentOutlet" selectName="content" loadingOrder="2" />
+	<silk:DataProvider id="contentDP" servicePath="/SilkBuilderIDE/system/ContentOutlet" selectName="content" />
+	
+	<silk:DataProvider id="ormDP" servicePath="/SilkBuilderIDE/system/ProjectOutlet" selectName="ormList" autoLoad="fase" />
+	
 	<silk:DataProvider id="outletDP" pkColumn="ormPath" />
 	
-	<silk:DataProvider id="ormContentDP" servicePath="/SilkBuilderIDE/system/ContentOutlet" selectName="content" autoLoad="false" />
+	<silk:DataProvider id="ormContentDP" servicePath="/SilkBuilderIDE/system/ContentOutlet" selectName="ormContent" autoLoad="false" />
 
 	<silk:DataProvider id="accessDP" >
 		{"value":"S", "label":"Select"},
@@ -119,27 +116,10 @@
 		var toSave = false;
 		var item;
 		var oldORM = "";
-		var reload = false;
 	</silk:JScode>
 	
 	<silk:JQcode>
 		
-		ormDP.on("beforeSelect", function(){
-			this.setParameter("silkSystemID", silkSystemID);
-		});
-		
-		executeBt.on("click", function(){
-			window.parent.runApp(silkProjectID);
-		});		
-
-		outletForm.on("modeChange", function(){
-			toSave = outletForm.getMode();
-		});
-		
-	</silk:JQcode>
-		
-	<silk:JQcode>
-
 		contentDP.on("beforeSelect", function(){
 			this.setParameter("silkProjectID", silkProjectID );
 		});
@@ -148,7 +128,7 @@
 
 			item = contentDP.getItem();
 			outletPage.setTitle( item.projectName + " - Outlet Editor"  );
-			
+
 			loadOutlet();
 
 			/*
@@ -160,57 +140,25 @@
 
 		loadOutlet = function(){
 
-			if( item.content.substring(0,1)!="{" ){
+			/*
+			 * Creates an empty array is content is not JSON.
+			 */
+			if( item.content.substring(0,1)!="{" ) item.content = "[]";
+				
+			/*
+			 * Parse JSON from content
+			 */
+			 outletDP.selectObject.data = JSON.parse("["+item.content+"]");
 
-				/*
-				 * Deprecated: Parsing old outlets
-				 */
-				 
-				var ormPath = "";
-				var selectList = "";
-				var parameter = "";
-				var lineArray = item.content.split("\n");
-				
-				for(x in lineArray){
-					var line = lineArray[x];
-					var partArray = line.split(":");
-					if( partArray[0]=="ormPath" ) ormPath = partArray[1];
-					if( partArray[0]=="selectName" ) selectList = ","+partArray[1].replaceAll(" ","")+",";
-					if( partArray[0]=="parameter" ) parameter = partArray[1];
-				}
-				
-				var obj = new Object();
-				oldORM = ormPath;
-				obj["selectList"] = selectList;
-				obj["parameter"] = parameter;
-				
-				outletDP.selectObject.data.push(obj);
-				
+			outletDP.load();
+
+			if( outletDP.getItem().ormPath.trim() == "" ){
+				outletForm.setUpdate();
+				ormModal.show();
 			}else{
-				
-				/*
-				 * Parse JSON from content
-				 */
-				 outletDP.selectObject.data = JSON.parse("["+item.content+"]");
+				ormContentDP.select();
 			}
 			
-			//console.log( outletDP.selectObject.data );
-			
-			outletDP.load();
-			
-			<silk:If renderIf="${editRight}" >
-				if( outletForm.projectPath.getValue()=="" ){
-					outletForm.setUpdate();
-					ormModal.show();
-				}else{
-					ormContentDP.load();
-				}
-			</silk:If>
-			
-			if( oldORM!="" ) outletForm.projectPath.setValue(oldORM);
-
-			//setTimeout(function(){outletForm.load();},250);
-		
 		};
 		
 		<silk:If renderIf="${editRight}" >
@@ -238,25 +186,40 @@
 		</silk:If>
 		
 	</silk:JQcode>
+
+	<silk:JQcode>
+		
+		ormDP.on("beforeSelect", function(){
+			this.setParameter("silkSystemID", silkSystemID);
+		});
+		
+		outletForm.on("update", function(){
+			if( outletDP.getItem().ormPath.trim() == "" ){
+				ormModal.show();
+			}else{
+				ormContentDP.select();
+			}
+		});
+		
+		outletForm.on("modeChange", function(){
+			toSave = outletForm.getMode();
+		});
+		
+	</silk:JQcode>
 	
 	<silk:JQcode>
 	
-		ormModal.on("show", function(){
-			$("#ormCloseBt").toggle(outletForm.projectPath.getValue()!="");
+		ormModal.on("beforeShow", function(){
+			ormList.clearSearchText()			
+			ormDP.select();
+			$("#ormModal_closeBt").toggle(outletForm.projectPath.getValue()!="");
 		});
-		
-		ormSelectBt.on("click",function(){
+
+		ormList.on("click", function(){
 			outletForm.projectPath.setValue( ormList.getSelectedItem().projectPath );
-			outletForm.silkProjectID.setValue( ormList.getSelectedItem().silkProjectID );
 			outletForm.ormPath.setValue( ormList.getSelectedItem().ormPath );
+			ormContentDP.select();
 			ormModal.close();
-			ormContentDP.load();
-		});
-		
-		reloadBt.on("click", function(){
-			reload = true;
-			ormContentDP.load();
-			silk.toast("ORM Reloaded","warning")
 		});
 		
 	</silk:JQcode>
@@ -264,7 +227,7 @@
 	<silk:JQcode>
 	
 		ormContentDP.on("beforeSelect", function(){
-			this.setParameter("silkProjectID", outletForm.silkProjectID.getValue() );
+			this.setParameter("ormPath", outletForm.ormPath.getValue() );
 		});
 		
 		ormContentDP.on("afterSelect", function(){
@@ -313,11 +276,6 @@
 			if( outletForm.getMode() ){
 				outletForm.setMode(true);
 				outletForm.projectPath.setPreviousValue("");
-			}
-			
-			if( reload ){
-				reload = false;
-				outletForm.setUpdate();
 			}
 
 		});
