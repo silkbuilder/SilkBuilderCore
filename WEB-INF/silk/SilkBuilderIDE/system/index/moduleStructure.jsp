@@ -286,23 +286,30 @@
 		 * Open the systems's menu page
 		 */
 		openSystemBt.on("click", function(){
+			
 			if( silkSystemID == undefined  ) return;
 
 			if( systemDP.getSelectedItem().menuLink=="" ){
-				silk.alert("Warning","The Menu Link has not been set. Use the option System Setup to set this up.","warning");
+				silk.alert("Warning", "The Menu Link has not been set. Use the option System Setup to set this up.", "warning");
 				return;
 			}
 	
 			var url = systemDP.getSelectedItem().menuLink;
 			url = url.replace(".jsp","");
 			url = "{contextPath}/service/"+url+"?silkSystemID="+silkSystemID;
+			localStorage.setItem("__silkSystemMenuLink", url);
 			
 			var openWindowMenu = false;
 			
-			if( menuWindow != undefined ){
+			if( menuWindow ){
 				if( menuWindow.location.href== "about:blank" ){
 					openWindowMenu= true;
 				}
+
+				if( menuWindow.closed ){
+					openWindowMenu= true;
+				}
+				
 			}else{
 				openWindowMenu = true;
 			}
