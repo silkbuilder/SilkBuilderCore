@@ -82,8 +82,6 @@
 						 * The form is activated and cleaned for another try.
 						 * An authentication failed message is displayed.
 						 */
-						loginForm.setEnable();
-						loginForm.clean();
 						silk.alert("Authentication Failed", "The provided credentials have been rejected. Enter valid credentials and try again.", "warning");
 					}
 				}else{
@@ -93,11 +91,13 @@
 					 * The response object containing error details is sent to the JavaScript console.
 					 * An authentication service failed message is displayed.
 					 */
-					loginForm.setEnable();
-					loginForm.clean();
 					console.log(response);
 					silk.alert("Authentication Error", "The authentication service is not available . Try again in a few minutes. (1)", "error");
 				}
+
+				loginForm.setEnable();
+				loginForm.clean();
+				
 			});
 		});
 
