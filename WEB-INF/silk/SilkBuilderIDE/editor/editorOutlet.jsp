@@ -116,6 +116,7 @@
 		var toSave = false;
 		var item;
 		var oldORM = "";
+		var formAction = "none";
 	</silk:JScode>
 	
 	<silk:JQcode>
@@ -197,7 +198,13 @@
 			if( outletDP.getItem().ormPath.trim() == "" ){
 				ormModal.show();
 			}else{
+				/*
+				 * Button action will be canceled. The update process will be initiated after the ormContentDP is selected.
+				 * This is to load any changes happening in the ORM after the outlet has been opened.
+				 */
 				ormContentDP.select();
+				formAction = "update";
+				return false;
 			}
 		});
 		
@@ -244,7 +251,7 @@
 				columnArray.push(object);
 			}
 			columnDP.selectObject.data = columnArray;
-			columnDP.load();
+			columnDP.select();
 
 			/*
 			 * Loading Select
@@ -258,7 +265,6 @@
 			}
 			selectDP.selectObject.data = selectArray;
 			selectDP.load();
-			outletForm.selectList.setValue(outletDP.selectObject.data[0].selectList);
 
 			/*
 			 * Loading Operations
@@ -273,11 +279,24 @@
 			operationDP.selectObject.data = operationArray;
 			operationDP.load();
 
-			if( outletForm.getMode() ){
-				outletForm.setMode(true);
-				outletForm.projectPath.setPreviousValue("");
-			}
+			outletForm.load();
 
+			if( formAction == "update" ){
+
+				formAction = "none";
+				outletForm.setUpdate();
+				
+				//outletForm.setMode(true);
+				//outletForm.projectPath.setPreviousValue("");
+
+				//outletForm.columnList.setValue(outletDP.selectObject.data[0].columnList);
+				//outletForm.selectList.setValue(outletDP.selectObject.data[0].selectList);
+				//outletForm.operationList.setValue(outletDP.selectObject.data[0].operationList);
+				
+			}else{
+				//outletForm.load();
+			}
+			
 		});
 		
 	</silk:JQcode>

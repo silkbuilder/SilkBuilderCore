@@ -296,7 +296,7 @@
 	
 			var url = systemDP.getSelectedItem().menuLink;
 			url = url.replace(".jsp","");
-			url = "{contextPath}/service/"+url+"?silkSystemID="+silkSystemID;
+			url = "{contextPath}/service"+url+"?silkSystemID="+silkSystemID;
 			localStorage.setItem("__silkSystemMenuLink", url);
 			
 			var openWindowMenu = false;

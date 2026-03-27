@@ -8,6 +8,6 @@
 	response.setContentType("application/json");
 %>
 <jsp:include page="../../../silk/service/view/dataProvider.jsp" >
-	<jsp:param name="ormPath" value="../silk/SilkBuilderIDE/silkLang" />
+	<jsp:param name="ormPath" value="../silk/SilkBuilderIDE/silkTesting" />
 	<jsp:param name="selectList" value=",sessionList," />
 </jsp:include>
