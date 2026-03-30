@@ -196,10 +196,13 @@
 		
 		outletForm.on("update", function(){
 			if( outletDP.getItem().ormPath.trim() == "" ){
+				/*
+				 * If the ormPath is empty, the list of ORMs is loaded to select one.
+				 */
 				ormModal.show();
 			}else{
 				/*
-				 * Button action will be canceled. The update process will be initiated after the ormContentDP is selected.
+				 * The update Button action will be canceled. The update process will be initiated after the ormContentDP is selected.
 				 * This is to load any changes happening in the ORM after the outlet has been opened.
 				 */
 				ormContentDP.select();
@@ -282,19 +285,8 @@
 			outletForm.load();
 
 			if( formAction == "update" ){
-
 				formAction = "none";
 				outletForm.setUpdate();
-				
-				//outletForm.setMode(true);
-				//outletForm.projectPath.setPreviousValue("");
-
-				//outletForm.columnList.setValue(outletDP.selectObject.data[0].columnList);
-				//outletForm.selectList.setValue(outletDP.selectObject.data[0].selectList);
-				//outletForm.operationList.setValue(outletDP.selectObject.data[0].operationList);
-				
-			}else{
-				//outletForm.load();
 			}
 			
 		});
