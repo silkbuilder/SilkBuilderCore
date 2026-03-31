@@ -13,6 +13,7 @@
 
 	String silkProjectID = request.getParameter("silkProjectID");
 	String previousName = request.getParameter("previousName");
+	String previousExtension = request.getParameter("previousExtension");
 
 	String contextPath = request.getServletContext().getRealPath("/");
 	String appPath = SilkPath.clearEclipsePath(contextPath)+"WEB-INF/workspace/";
@@ -34,7 +35,6 @@
 	String sourceName	= sourceDP.getStringItem("sourceName");
 	String parentName	= sourceDP.getStringItem("parentName");
 	String moduleParent	= sourceDP.getStringItem("moduleParent");
-	//String content		= sourceDP.getStringItem("content");
 	int saveMode		= sourceDP.getIntItem("saveMode");
 	String extension	= sourceDP.getStringItem("extension");
 	String nodeType		= sourceDP.getStringItem("nodeType");
@@ -69,19 +69,20 @@
 		 * Source Path
 		 */
 		if( saveMode>1 ){
+			
 			if( nodeType.equals("MOD") ){
 				/*
 				 * Adds module parent to source path
 				 */
-				previousPath = servicePath + "/" + moduleParent + "/"+previousName+extension;
+				previousPath = servicePath + "/" + moduleParent + "/"+previousName+previousExtension;
 				sourcePath = servicePath + "/" + moduleParent + "/"+sourceName+extension;
 			}else{
-				previousPath = servicePath + "/"+previousName+extension;
+				previousPath = servicePath + "/"+previousName+previousExtension;
 				sourcePath = servicePath + "/"+sourceName+extension;
 			}
 				
 		}else{
-			previousPath = projectPath + "/"+previousName+extension;
+			previousPath = projectPath + "/"+previousName+previousExtension;
 			sourcePath = projectPath + "/"+sourceName+extension;
 		}
 	}
@@ -93,11 +94,14 @@
 
 	if( nodeType.equals("APP") || nodeType.equals("PUB") ){
 		/*
-		 * If appllication, renames application folder if exists.
+		 * If it is an application, private or public, it renames the application folder if it exists.
 		 */
 		previousPath = servicePath + "/"+previousName;
 		sourcePath = servicePath + "/"+sourceName;
-		FileTool.renameFile("", previousPath, sourcePath);		
+
+		if( !previousPath.equals(sourcePath) ){
+			FileTool.renameFile("", previousPath, sourcePath);
+		}
 	}
 	
 	//System.out.println("================");

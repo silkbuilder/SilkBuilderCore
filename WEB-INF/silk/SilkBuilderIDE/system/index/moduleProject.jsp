@@ -18,24 +18,24 @@
 		</silk:Header>
 		<silk:Content>
 			
-				<silk:Form id="projectForm" dataSource="projectList" buttonTarget="structureListPage,projectFormPage"
-					buttonTest="admin,architect,developer one-in ${developerRole}"
-					confirmTarget="delete"
-					confirmTitle="Delete Element?"
-					confirmMessage="This process will remove the selected element and, if existing, the children elements."
-					confirmLabel="Continue?"
-				>
-					<silk:Input type="select" id="nodeType" label="Type" valueColumn="nodeType" labelColumn="name" prompt="Select..."
-						dataSource="nodeDP" linkedColumns="iconName,iconColor,editor,saveMode,parent,editor,saveMode"
-						visible="projectForm.getAction()=='insert'" scope="(projectForm.getAction()=='insert') ? 1 : 2"
-						required="projectForm.getAction()=='insert'"
-					/>
-					<silk:Input type="text" id="projectName" label="Name" required="true" />
-					<silk:Input type="text" id="projectUUID" label="UUID" editable="false" scope="3" />
-					<silk:Input type="hidden" id="silkSystemID" value="(silkSystemID)" />
-					<silk:Input type="hidden" id="silkProjectID" />
-					<silk:Input type="hidden" id="editRights" value="1" scope="2" />
-				</silk:Form>
+			<silk:Form id="projectForm" dataSource="projectList" buttonTarget="structureListPage,projectFormPage"
+				buttonTest="admin,architect,developer one-in ${developerRole}"
+				confirmTarget="delete"
+				confirmTitle="Delete Element?"
+				confirmMessage="This process will remove the selected element and, if existing, the children elements."
+				confirmLabel="Continue?"
+			>
+				<silk:Input type="select" id="nodeType" label="Type" valueColumn="nodeType" labelColumn="name" prompt="Select..."
+					dataSource="nodeDP" linkedColumns="iconName,iconColor,editor,saveMode,parent,editor,saveMode"
+					editable="getNodeTypeEditable()"
+					required="projectForm.getAction()=='insert'"
+				/>
+				<silk:Input type="text" id="projectName" label="Name" required="true" />
+				<silk:Input type="text" id="projectUUID" label="UUID" editable="false" scope="3" />
+				<silk:Input type="hidden" id="silkSystemID" value="(silkSystemID)" />
+				<silk:Input type="hidden" id="silkProjectID" />
+				<silk:Input type="hidden" id="editRights" value="1" scope="2" />
+			</silk:Form>
 			
 		</silk:Content>
 	</silk:Page>
@@ -47,54 +47,96 @@
 		renderIf="admin, architect one-in ${developerRole}"
 	/>
 
+	<silk:JScode>
+		var rebuildClearID = "";
+		var changeList = "APP,CSF,CSFP,PUB";
+		var previousExtension = "";
+	</silk:JScode>
+	
 	<silk:JQcode>
 		
-		projectForm.on("afterModeChange", function(mode){
-			/*
-			 * Hides syncbox if project form is being edited
-			 */
-			$("#syncBox").toggle(!mode);
+		/*
+		 * Before loading the form, it loads the node type select
+		 */
+		projectForm.on("beforeLoad", function(){
+			//projectForm.nodeType.load();
+		});
+
+		/*
+		 * Before loading the form, it loads the node type select
+		 */
+		projectForm.on("beforeModeChange", function(){
+			projectForm.nodeType.load();
+			projectForm.nodeType.setValue(projectList.getSelectedItem().nodeType);
+		});
+
+		/*
+		 * Action after the form mode change
+		 */
+		projectForm.on("afterModeChange", function(mode){0
 			
 			/*
-			 * If form is read only exits
+			 * If the form is in read-only mode, it exits
 			 */
 			if( !mode ) return;
 			
 			/*
-			 * If the select row is not the first (Options) then expands the select for node type. 
+			 * If the selected row is not the first (Options), then expand the selection for the node type. 
 			 */
-			if( projectForm.nodeType.$input.find("option").length>1 ){
+			if( projectForm.nodeType.$input.find("option").length > 1 && projectForm.getAction()=="insert" ){
 				projectForm.nodeType.openSelect();
 			}
+
+			/*
+			 * Save the previous extension to use it during renaming.
+			 */
+			previousExtension = ifUndefined(projectForm.nodeType.getItem().extension,"");
+														 
 		});
 		
 		/*
-		 * Filter the note type options to show based on parent filter column
+		 * Filter the note type options to show based on the parent filter column
 		 */
 		projectForm.nodeType.on("filterLoad", function(item){
-			if( item.parentFilter.indexOf(projectList.getSelectedItem().nodeType)>-1 ) return true;
+			if( projectForm.getAction()=="insert" ){
+				if( item.parentFilter.indexOf(projectList.getSelectedItem().nodeType)>-1 ) return true;
+			}else{
+				
+				let nodeType = projectList.getSelectedItem().nodeType;
+				let nodeList = nodeType+",";
+
+				if( changeList.indexOf(nodeType) > -1 ) nodeList += changeList;
+
+				if( nodeList.indexOf(item.nodeType) > -1 ) return true;
+				
+			}
 			return false;
 		});
-		
+
 		/*
-		 * Before loading the form it loads the node type select
+		 * Determines when the node type should be editable.
 		 */
-		projectForm.on("beforeLoad", function(){
-			projectForm.nodeType.load();
-		});
+		getNodeTypeEditable = function(){
+			if( projectForm.getAction()=='insert' ) return true;
+			if( projectForm.getAction()=='delete' ) return false;
+			let nodeType = projectList.getSelectedItem().nodeType;
+			if( changeList.indexOf(nodeType) > -1  ) return true;
+			return false;
+		}
+		
+	</silk:JQcode>
+
+	<silk:JQcode>
 		
 		/*
-		 * Loads the target hosts urls
+		 * Loads the target hosts' URLs
 		 */
 		targetDP.on("beforeSelect", function(){
 			this.setParameter("silkSystemID",silkSystemID);
 		});
 		
 	</silk:JQcode>
-
-	<silk:JScode>
-		var rebuildClearID = "";
-	</silk:JScode>
+		
 	
 	<silk:JQcode renderIf="admin, architect one-in ${developerRole}" >
 

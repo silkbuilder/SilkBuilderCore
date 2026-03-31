@@ -153,7 +153,7 @@
 
 		projectDP.on("afterSelect",function(){
 			/*
-			 * Colapses the options folder.
+			 * Collapses the options folder.
 			 */
 			if( projectDP.getItem().silkProjectID == "SYSROOT" ){
 				projectList.$table.find("td").first().trigger("click");
@@ -171,16 +171,22 @@
 			 */
 			if( projectList.getSelectedItem().projectLevel==1 ) return;
 			
-			let previousValue = projectForm.projectName.getPreviousValue();
-			let newValue = projectForm.projectName.getValue()
+			let previousName = projectForm.projectName.getPreviousValue();
+			let newName = projectForm.projectName.getValue()
 
-			if( previousValue!=newValue ){
+			let previousType = projectForm.nodeType.getPreviousValue();
+			let newType = projectForm.nodeType.getValue()
+
+			projectDP.recordSync();
+			
+			if( previousName!=newName || previousType!=newType ){
 
 				$.ajax({
 					url: "{contextPath}/service/SilkBuilderIDE/system/resourceRename",
 					data: {
 						silkProjectID: silkProjectID,
-						previousName: previousValue
+						previousName: previousName,
+						previousExtension: previousExtension,
 					},
 					success: function(result){}
 				});
@@ -188,11 +194,12 @@
 				let frame = window.frames["frame-T"+silkProjectID];
 				if( frame==undefined ) return;
 
-				$("#T"+silkProjectID+"_tab span").text(newValue);
+				$("#T"+silkProjectID+"_tab span").text(newName);
 				frame.classList.add("silk-hidden");
 				frame.contentWindow.location.reload();
 				
 			}
+			
 		});
 
 		projectForm.on("delete", function(){
@@ -262,7 +269,7 @@
 			 * Hides or shows the insertBt
 			 */
 			projectForm.on("showInsertBt", function(){
-				return isIn(item.nodeType, "SRV", "APP", "PUB");
+				return isIn(item.nodeType, "SRV", "APP", "CSF", "PUB", "CSFP");
 			});
 		
 			/*
