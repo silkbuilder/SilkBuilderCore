@@ -384,11 +384,11 @@ VALUES
 
 INSERT INTO silkNode (nodeType, name, fileName, extension, nodeLevel, parent, editor, saveMode, import, parentFilter, iconName, iconColor, template, recordOrder, sync)
 VALUES
-	('CSF','Private Service',NULL,'.jsp',3,0,1,2,1,'SRV','fa-solid fa-satellite-dish','#81dafc','<%@page contentType="text/html;charset=UTF-8" import="com.oopsclick.silk.dbo.*,java.io.*" trimDirectiveWhitespaces="true" %>' + CHAR(13) + CHAR(10) + '<%' + CHAR(13) + CHAR(10) + '	' + CHAR(13) + CHAR(10) + '%>',10,1);
+	('CSF','Private Service',NULL,'.jsp',3,1,1,2,1,'SRV','fa-solid fa-satellite-dish','#81dafc','<%@page contentType="text/html;charset=UTF-8" import="com.oopsclick.silk.dbo.*,java.io.*" trimDirectiveWhitespaces="true" %>' + CHAR(13) + CHAR(10) + '<%' + CHAR(13) + CHAR(10) + '	' + CHAR(13) + CHAR(10) + '%>',10,1);
 
 INSERT INTO silkNode (nodeType, name, fileName, extension, nodeLevel, parent, editor, saveMode, import, parentFilter, iconName, iconColor, template, recordOrder, sync)
 VALUES
-	('CSFP','Public Service',NULL,'.srv',3,0,1,2,1,'SRV','fa-solid fa-satellite-dish','#a0e7a0','<%@page contentType="text/html;charset=UTF-8" import="com.oopsclick.silk.dbo.*,java.io.*" trimDirectiveWhitespaces="true" %>' + CHAR(13) + CHAR(10) + '<%' + CHAR(13) + CHAR(10) + '' + CHAR(13) + CHAR(10) + '%>',13,1);
+	('CSFP','Public Service',NULL,'.srv',3,1,1,2,1,'SRV','fa-solid fa-satellite-dish','#a0e7a0','<%@page contentType="text/html;charset=UTF-8" import="com.oopsclick.silk.dbo.*,java.io.*" trimDirectiveWhitespaces="true" %>' + CHAR(13) + CHAR(10) + '<%' + CHAR(13) + CHAR(10) + '' + CHAR(13) + CHAR(10) + '%>',13,1);
 
 INSERT INTO silkNode (nodeType, name, fileName, extension, nodeLevel, parent, editor, saveMode, import, parentFilter, iconName, iconColor, template, recordOrder, sync)
 VALUES

@@ -205,10 +205,11 @@
 				 * The update Button action will be canceled. The update process will be initiated after the ormContentDP is selected.
 				 * This is to load any changes happening in the ORM after the outlet has been opened.
 				 */
-				ormContentDP.select();
 				formAction = "update";
-				return false;
+				ormContentDP.select();
 			}
+			
+			return false;
 		});
 		
 		outletForm.on("modeChange", function(){
@@ -226,10 +227,17 @@
 		});
 
 		ormList.on("click", function(){
+			
 			outletForm.projectPath.setValue( ormList.getSelectedItem().projectPath );
 			outletForm.ormPath.setValue( ormList.getSelectedItem().ormPath );
+
+			outletDP.selectObject.data[0]["projectPath"] = ormList.getSelectedItem().projectPath;
+			outletDP.selectObject.data[0]["ormPath"] = ormList.getSelectedItem().ormPath;
+			
 			ormContentDP.select();
+			formAction = "insert";
 			ormModal.close();
+			
 		});
 		
 	</silk:JQcode>
@@ -284,9 +292,21 @@
 
 			outletForm.load();
 
+			/*
+			 * Action when updating the form
+			 */
 			if( formAction == "update" ){
 				formAction = "none";
 				outletForm.setUpdate();
+			}
+
+			/*
+			 * Action when a new ORM is being selected.
+			 */
+			if( formAction == "insert" ){
+				formAction = "none";
+				outletForm.setUpdate();
+				outletForm.projectPath.setPreviousValue("");
 			}
 			
 		});
