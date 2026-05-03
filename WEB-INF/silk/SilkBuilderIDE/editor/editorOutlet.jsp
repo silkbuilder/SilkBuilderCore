@@ -249,6 +249,17 @@
 		});
 		
 		ormContentDP.on("afterSelect", function(){
+
+			if( ormContentDP.size() == 0  ){
+				outletForm.projectPath.setPreviousValue("");
+				outletForm.setUpdate();
+				silk.alert("ORM Not Found", "The ORM has not been found. It may have been removed. Select a new one.");
+				return;				
+			}
+
+			/*
+			 * Load orm structure
+			 */
 			let ormObject = JSON.parse(ormContentDP.getItem().content);
 			
 			/*

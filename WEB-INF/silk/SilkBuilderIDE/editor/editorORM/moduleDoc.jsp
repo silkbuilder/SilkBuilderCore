@@ -164,7 +164,6 @@
 					html += "<h4>"+databaseDP.getItemAt(y).databaseName+"</h4>"
 					var sql = ifUndefined(selectDP.getItemAt(x,"sql"+dbIndex),"");
 					html += renderCode(sql);
-					console.log( renderCode(sql) );
 				}
 				
 			}
@@ -196,6 +195,8 @@
 					
 				}
 			}
+
+			html = html.replaceAll("\{dbTable\}", tableDP.getItem().tableName);
 			
 			docField.setValue(html);			
 			

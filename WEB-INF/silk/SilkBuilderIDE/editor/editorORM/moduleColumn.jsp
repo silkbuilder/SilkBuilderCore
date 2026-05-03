@@ -40,7 +40,7 @@
 							<silk:Input id="secure" type="checkbox" label="Secure" width="100px"
 								visible="columnForm.pk.getValue()==0 && queryForm.queryType.getValue()=='SQL'"
 							/>
-							<silk:Input id="notNull" type="checkBox" label="Not Null" width="90px"
+							<silk:Input id="notNull" type="checkBox" label="Not&nbsp;Null" width="100px"
 								visible="queryForm.queryType.getValue()=='SQL'"
 							/>
 							<silk:Input id="unique" type="checkBox" label="Unique" width="90px"
@@ -264,7 +264,7 @@
 			
 			var columnType = "";
 			var defaultValue = "";
-			var hasForeing = true;
+			var hasForeing = false;
 			var fkCode = ""
 			
 			for(var x=0; x < ormObject.column.length; x++){
@@ -287,6 +287,14 @@
 			var sqlCode = "alter table "+ormObject.table.tableName+" add "+columnForm.columnName.getValue()+" "+columnType;
 			if( ifUndefined(defaultValue,"")!="" ) sqlCode += " default "+defaultValue;
 			if( hasForeing ) sqlCode += "\n"+fkCode;
+			sqlCode += ';'
+
+			if( columnForm.indexColumn.getValue() == 1 ) {
+				sqlCode += "\ncreate index " + ormObject.table.tableName + "_" + columnForm.columnName.getValue() + " on " + ormObject.table.tableName + "(" + columnForm.columnName.getValue() + ");\n";
+			}
+
+			
+			sqlCode = sqlCode.replaceAll("\{dbTable\}", ormObject.table.tableName);
 			
 			alterCode.setValue( sqlCode );
 		});

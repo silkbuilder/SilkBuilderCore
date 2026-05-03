@@ -122,7 +122,7 @@
 			<silk:If renderIf="${editRight}" >
 				<div id="tableOptionsBox" align="center">
 					<hr/>
-					<silk:Button label="XML" targetPage="xmlModal"  />
+					<silk:Button label="XML" targetPage="xmlModal" renderIf="false" />
 					<silk:Button id="sqlViewBt" label="SQL" targetPage="createModal" renderIf="${urlParameter2}=ORM" />
 					<silk:Button label="Exp" targetPage="exportModal" />
 					<silk:Button label="Imp" targetPage="importModal" />

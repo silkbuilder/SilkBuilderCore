@@ -273,6 +273,7 @@
 			from silkProject pj
 			join silkNode pn on pj.nodeType=pn.nodeType
 			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
 		]]>
 	</sqlSelect>
 
@@ -302,6 +303,7 @@
 			from silkProject pj
 			join silkNode pn on pj.nodeType=pn.nodeType
 			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
 		]]>
 	</sqlSelect>
 
@@ -331,6 +333,7 @@
 			from silkProject pj
 			join silkNode pn on pj.nodeType=pn.nodeType
 			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
 		]]>
 	</sqlSelect>
 
@@ -360,6 +363,7 @@
 			from silkProject pj
 			join silkNode pn on pj.nodeType=pn.nodeType
 			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
 		]]>
 	</sqlSelect>
 
@@ -625,7 +629,8 @@
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
 			left join silkProject p3 on p2.parentID=p3.silkProjectID
 			join silkNode pn on pj.nodeType=pn.nodeType
-			where pj.silkProjectID = $P{silkProjectID} 
+			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
 		]]>
 	</sqlSelect>
 
@@ -660,7 +665,8 @@
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
 			left join silkProject p3 on p2.parentID=p3.silkProjectID
 			join silkNode pn on pj.nodeType=pn.nodeType
-			where pj.silkProjectID = $P{silkProjectID} 
+			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
 		]]>
 	</sqlSelect>
 
@@ -696,6 +702,7 @@
 			left join silkProject p3 on p2.parentID=p3.silkProjectID
 			join silkNode pn on pj.nodeType=pn.nodeType
 			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
 		]]>
 	</sqlSelect>
 
@@ -731,6 +738,7 @@
 			left join silkProject p3 on p2.parentID=p3.silkProjectID
 			join silkNode pn on pj.nodeType=pn.nodeType
 			where pj.silkProjectID = $P{silkProjectID}
+			and pj.status=0
 		]]>
 	</sqlSelect>
 
@@ -755,6 +763,7 @@
 			where pj.nodeType in ('ORM','ORMF')
 			and coalesce(pj.content,'')<>''
 			and pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
 			order by ormPath
 		]]>
 	</sqlSelect>
@@ -780,6 +789,7 @@
 			where pj.nodeType in ('ORM','ORMF')
 			and isNull(pj.content,'')<>''
 			and pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
 			order by ormPath
 		]]>
 	</sqlSelect>
@@ -805,6 +815,7 @@
 			where pj.nodeType in ('ORM','ORMF')
 			and coalesce(pj.content,'')<>''
 			and pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
 			order by ormPath
 		]]>
 	</sqlSelect>
@@ -822,6 +833,7 @@
 			where pj.nodeType in ('ORM','ORMF')
 			and nvl(dbms_lob.getlength(pj.content),0) <> 0
 			and pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
 			order by ormPath
 		]]>
 	</sqlSelect>
@@ -838,6 +850,7 @@
 			where pj.nodeType in ('ORM','ORMF')
 			and coalesce(pj.content,'')<>''
 			and pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
 			and concat(
 					p2.projectUUID,
 					'/',
@@ -858,6 +871,7 @@
 			where pj.nodeType in ('ORM','ORMF')
 			and coalesce(pj.content,'')<>''
 			and pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
 			and concat(
 					p2.projectUUID,
 					'/',
@@ -878,6 +892,7 @@
 			where pj.nodeType in ('ORM','ORMF')
 			and coalesce(pj.content,'')<>''
 			and pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
 			and concat(
 					p2.projectUUID,
 					'/',
@@ -898,6 +913,7 @@
 			where pj.nodeType in ('ORM','ORMF')
 			and coalesce(pj.content,'')<>''
 			and pj.silkSystemID = $P{silkSystemID}
+			and pj.status=0
 			and p2.projectUUID||'/'||replace(pj.projectName,' ','') = $P{ormPath}
 		]]>
 	</sqlSelect>
@@ -914,6 +930,7 @@
 			where pj.silkSystemID = $P{silkSystemID}
 			and pj.status=0
 			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
+			and pj.status=0
 			and position(
 					concat('/',$P{silkProjectID},'/') in
 					concat('/',
@@ -937,6 +954,7 @@
 			where pj.silkSystemID = $P{silkSystemID}
 			and pj.status=0
 			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
+			and pj.status=0
 			and charindex(
 					concat('/',$P{silkProjectID},'/'),
 					concat('/',
@@ -960,6 +978,7 @@
 			where pj.silkSystemID = $P{silkSystemID}
 			and pj.status=0
 			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
+			and pj.status=0
 			and position(
 					concat('/',$P{silkProjectID},'/') in
 					concat('/',
@@ -983,6 +1002,7 @@
 			where pj.silkSystemID = $P{silkSystemID}
 			and pj.status=0
 			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
+			and pj.status=0
 			and instr(
 					'/' || $P{silkProjectID} || '/',
 					'/' ||
