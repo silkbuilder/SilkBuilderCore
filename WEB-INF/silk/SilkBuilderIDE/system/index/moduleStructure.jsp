@@ -38,7 +38,7 @@
 					<span class='{iconName}' aria-hidden='true' style='color:{iconColor};' ></span>
 					{projectName}&nbsp;
 					<silk:If renderIf="read!=${developerRole}" >
-						<a href="javascript:void(0)" onClick="runApp('{silkProjectID}')" keepIf="('APP,PUB,CSF,CSFP').indexOf('{nodeType}')!=-1" >
+						<a href="javascript:void(0)" onClick="runApp('{silkProjectID}')" keepIf="('APP,PUB,CSF,CSFP,MCP').indexOf('{nodeType}')!=-1" >
 							<i class="fa-solid fa-circle-play fa-lg" style="color:#C6FE3A;"></i>
 						</a>
 					</silk:If>
@@ -338,10 +338,15 @@
 			var nodeType = item.nodeType;
 		
 			var urlType = "service/";
+			
 			if( nodeType=="PUB" || nodeType=="CSFP" || nodeType=="OSLP" ){
 				urlType = "link/";
 			}
 
+			if( nodeType=="MCP" ){
+				urlType = "mcptool/";
+			}
+			
 			var projectPath = item.projectName;
 
 			var parentID = item.parentID;

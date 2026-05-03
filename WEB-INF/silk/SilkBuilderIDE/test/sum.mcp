@@ -1,0 +1,13 @@
+<%@page contentType="application/json;charset=UTF-8"
+	import="
+		com.oopsclick.silk.dbo.*,
+		java.io.*
+	"
+	trimDirectiveWhitespaces="true"
+%>
+<%
+	/*
+	 *
+	 */
+%>
+{ "resul": 20 }
