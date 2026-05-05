@@ -5,6 +5,12 @@
 --%>
 <silk:Module >
 
+	<style>
+		#exportCode, #importCode {
+			margin: 0px;
+		}
+	</style>
+	
 	<silk:Page id="tableFormPage" stage="B" returnPage="summaryPage"
 		smLayout="B:*:b"
 		mdLayout="B:*:b"
@@ -138,16 +144,26 @@
 	</silk:Modal>
 
 	<silk:Modal id="createModal" title="Create Table SQL" size="large" closeButton="true" bodyMargin="false" >
-		<silk:Input id="createCode" type="sql" />
-	</silk:Modal>
-
-	<silk:Modal id="exportModal" title="Export JSON" size="large" closeButton="true" bodyMargin="false" >
-		<silk:Input id="exportCode" type="code" mode="true" extraProperties="readonly" height="500px !important" />
-	</silk:Modal>
-
-	<silk:Modal id="importModal" title="ImportJSON" size="large" closeButton="true" bodyMargin="false" >
 		<silk:ModalBody>
-			<silk:Input id="importCode" type="code" mode="true" height="500px !important" />
+			<silk:Input id="createCode" type="sql" />
+		</silk:ModalBody>
+		<silk:ModalFooter>
+			<silk:Button id="copySQLBt" label="Copy to Clipboard" />
+		</silk:ModalFooter>
+	</silk:Modal>
+
+	<silk:Modal id="exportModal" title="Export JSON" size="large" closeButton="true" >
+		<silk:ModalBody>
+			<silk:Input id="exportCode" type="code" mode="true" extraProperties="readonly" height="500px" />
+		</silk:ModalBody>
+		<silk:ModalFooter>
+			<silk:Button id="copyJsonBt" label="Copy to Clipboard" />
+		</silk:ModalFooter>
+	</silk:Modal>
+
+	<silk:Modal id="importModal" title="Import JSON" size="large" closeButton="true" >
+		<silk:ModalBody>
+			<silk:Input id="importCode" type="code" mode="true" height="500px" />
 		</silk:ModalBody>
 		<silk:ModalFooter>
 			<silk:Button id="importBt" label="import" />
@@ -202,12 +218,23 @@
 			);
 			createCode.setValue(createSQL.trim());
 		});
+
+		copySQLBt.on("click", function(){
+			navigator.clipboard.writeText(createCode.getValue());
+			silk.toast("SQL copied to clipboard");
+		});
+
 		
 		exportModal.on("show", function(){
 			updateOrmObject();
 			exportCode.setValue(JSON.stringify(ormObject));
 		});
 
+		copyJsonBt.on("click", function(){
+			navigator.clipboard.writeText(exportCode.getValue());
+			silk.toast("JSON copied to clipboard");
+		});
+		
 		importModal.on("show", function(){
 			importCode.setValue("");
 		});
@@ -218,6 +245,7 @@
 			contentLoading(code);
 			importModal.hide();
 			saveORM();
+			silk.toast("JSON imported");
 		});
 				
 	</silk:JQcode>

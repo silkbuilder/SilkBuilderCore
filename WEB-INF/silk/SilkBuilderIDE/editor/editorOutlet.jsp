@@ -144,7 +144,7 @@
 			/*
 			 * Creates an empty array is content is not JSON.
 			 */
-			if( item.content.substring(0,1)!="{" ) item.content = "[]";
+			if( item.content.substring(0,1)!="{" ) item.content = "{\"ormPath\":\"\",\"selectName\":\"\",\"parameter\":\"\"}";
 				
 			/*
 			 * Parse JSON from content
