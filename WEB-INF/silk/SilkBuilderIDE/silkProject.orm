@@ -1255,7 +1255,7 @@
 	<sqlSelect name="sync-email" silkDatabaseID="2" >
 		<![CDATA[
 			select
-				ml.silkProjectID,
+				pj1.silkProjectID,
 				ml.emailUUID,
 				ml.langID,
 				ml.wrapper,
@@ -1281,7 +1281,7 @@
 	<sqlSelect name="sync-email" silkDatabaseID="1" >
 		<![CDATA[
 			select
-				ml.silkProjectID,
+				pj1.silkProjectID,
 				ml.emailUUID,
 				ml.langID,
 				ml.wrapper,
@@ -1307,7 +1307,7 @@
 	<sqlSelect name="sync-email" silkDatabaseID="3" >
 		<![CDATA[
 			select
-				ml.silkProjectID,
+				pj1.silkProjectID,
 				ml.emailUUID,
 				ml.langID,
 				ml.wrapper,
@@ -1333,7 +1333,7 @@
 	<sqlSelect name="sync-email" silkDatabaseID="4" >
 		<![CDATA[
 			select
-				ml.silkProjectID,
+				pj1.silkProjectID,
 				ml.emailUUID,
 				ml.langID,
 				ml.wrapper,
