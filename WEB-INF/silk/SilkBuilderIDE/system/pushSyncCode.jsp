@@ -228,9 +228,9 @@
 	 * Email template extraction
 	 * Checks if it is pro version
 	 */
-	File file = new File(systemPath+"WEB-INF/silk/SilkBuilderIDE/silkDevelover.orm");
+	File file = new File(systemPath+"WEB-INF/silk/SilkBuilderIDE/silkDeveloper.orm");
 	if( file.exists() ){
-	DataProvider emailDP = new DataProvider("/../silk/SilkBuilderIDE/silkProject", session);
+		DataProvider emailDP = new DataProvider("/../silk/SilkBuilderIDE/silkProject", session);
 		emailDP.setParameter("silkProjectID", silkProjectID);
 		emailDP.select("sync-email");
 		JSONArray emailList = new JSONArray();

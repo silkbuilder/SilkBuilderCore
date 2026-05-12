@@ -1042,6 +1042,7 @@
 					then pj3.silkProjectID
 					else pj4.silkProjectID
 				end as cleanID,
+				
 				case
 					when pj1.projectLevel=3
 					then pj3.projectUUID
@@ -1254,6 +1255,7 @@
 	<sqlSelect name="sync-email" silkDatabaseID="2" >
 		<![CDATA[
 			select
+				ml.silkProjectID,
 				ml.emailUUID,
 				ml.langID,
 				ml.wrapper,
@@ -1279,6 +1281,7 @@
 	<sqlSelect name="sync-email" silkDatabaseID="1" >
 		<![CDATA[
 			select
+				ml.silkProjectID,
 				ml.emailUUID,
 				ml.langID,
 				ml.wrapper,
@@ -1304,6 +1307,7 @@
 	<sqlSelect name="sync-email" silkDatabaseID="3" >
 		<![CDATA[
 			select
+				ml.silkProjectID,
 				ml.emailUUID,
 				ml.langID,
 				ml.wrapper,
@@ -1329,6 +1333,7 @@
 	<sqlSelect name="sync-email" silkDatabaseID="4" >
 		<![CDATA[
 			select
+				ml.silkProjectID,
 				ml.emailUUID,
 				ml.langID,
 				ml.wrapper,

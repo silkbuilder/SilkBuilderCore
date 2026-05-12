@@ -46,6 +46,9 @@
 	<silk:DataProvider id="rebuildDP" servicePath="/SilkBuilderIDE/system/ProjectOutlet" selectName="sync-files" autoLoad="false"
 		renderIf="admin, architect one-in ${developerRole}"
 	/>
+	<silk:DataProvider id="rebuildMailDP" servicePath="/SilkBuilderIDE/system/ProjectOutlet" selectName="sync-email" autoLoad="false"
+		renderIf="admin, architect one-in ${developerRole}"
+	/>
 
 	<silk:JScode>
 		var rebuildClearID = "";
@@ -140,10 +143,16 @@
 	
 	<silk:JQcode renderIf="admin, architect one-in ${developerRole}" >
 
+		/*
+		 * Handles rebuild button.
+		 */
 		rebuildBt.on("click", function(){
 			rebuildDP.select();
 		});
-		
+
+		/*
+		 * Call rebuild project data provider
+		 */
 		rebuildDP.on("beforeSelect", function(){
 			this.setParameter("silkSystemID", silkSystemID);
 			this.setParameter("silkProjectID", silkProjectID);
@@ -152,6 +161,9 @@
 			}
 		});
 
+		/*
+		 * Executes Rebuild Project
+		 */
 		rebuildDP.on("afterSelect", function(){
 			if( rebuildClearID!="" ){
 				/*
@@ -183,9 +195,40 @@
 					async: false
 				});
 			}
-			silk.alert("Finished rebuilding files.","","info");
+			rebuildMailDP.select();
 		});
 
+		/*
+		 * Call rebuild email data provider
+		 */
+		rebuildMailDP.on("beforeSelect", function(){
+			this.setParameter("silkSystemID", silkSystemID);
+			this.setParameter("silkProjectID", silkProjectID);
+		});
+
+		/*
+		 * Call save for each email file on selection.
+		 */
+		rebuildMailDP.on("afterSelect", function(){
+
+			/*
+			 * Call save for each email file on selection.
+			 */
+			var url = "{contextPath}/service/SilkBuilderIDE/system/saveCode";
+			for( x=0; x<rebuildMailDP.size(); x++ ){
+				let silkProjectID = rebuildDP.getItemAt(x,"silkProjectID");
+				$.ajax({
+					url: url,
+					data: { silkProjectID: silkProjectID },
+					success: function(data) {},
+					error: function() {},
+					type: 'POST',
+					async: false
+				});
+			}
+			silk.alert("Finished rebuilding files.","","info");
+		});
+		
 	</silk:JQcode>
 	
 </silk:Module>
