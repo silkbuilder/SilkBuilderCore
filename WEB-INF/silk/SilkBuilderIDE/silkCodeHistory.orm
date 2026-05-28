@@ -6,14 +6,218 @@
 		<column name="silkCodeHistoryID" type="I" pk="1" />
 		<column name="silkProjectID" type="I" secure="1" />
 		<column name="content" type="S" />
-		<column name="commitFlag" type="I" />
 		<column name="operationDate" type="D" />
 		<column name="operationUser" type="I" secure="1" />
+		<column name="commitFlag" type="I" />
+		<column name="commitDate" type="D" />
+		<column name="commitUser" type="I" secure="1" />
 	</table>
 
 	<schema silkDatabaseID="2" />
 	<schema silkDatabaseID="1" />
 	<schema silkDatabaseID="3" />
 	<schema silkDatabaseID="4" />
+
+	<sqlSelect name="lastID" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				max(silkCodeHistoryID)
+			from silkCodeHistory
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="lastID" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				max(silkCodeHistoryID)
+			from silkCodeHistory
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="lastID" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				max(silkCodeHistoryID)
+			from silkCodeHistory
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="lastID" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				max(silkCodeHistoryID)
+			from silkCodeHistory
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="list" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				ch.silkCodeHistoryID,
+				ch.operationDate,
+				dv.fullName
+			from silkCodeHistory ch
+			left join silkDeveloper dv on ch.operationUser = dv.silkDeveloperID
+			where ch.silkProjectID = $P{silkProjectID}
+			and ch.silkCodeHistoryID >= $P{silkCodeHistoryID}
+			order by silkCodeHistoryID asc
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="list" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				silkCodeHistoryID,
+				operationDate
+			from silkCodeHistory
+			where silkProjectID = $P{silkProjectID}
+			and silkCodeHistoryID >= $P{silkCodeHistoryID}
+			order by silkCodeHistoryID asc
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="list" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				silkCodeHistoryID,
+				operationDate
+			from silkCodeHistory
+			where silkProjectID = $P{silkProjectID}
+			and silkCodeHistoryID >= $P{silkCodeHistoryID}
+			order by silkCodeHistoryID asc
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="list" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				silkCodeHistoryID,
+				operationDate
+			from silkCodeHistory
+			where silkProjectID = $P{silkProjectID}
+			and silkCodeHistoryID >= $P{silkCodeHistoryID}
+			order by silkCodeHistoryID asc
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="content" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				content
+			from silkCodeHistory
+			where silkCodeHistoryID = $P{silkCodeHistoryID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="content" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				content
+			from silkCodeHistory
+			where silkCodeHistoryID = $P{silkCodeHistoryID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="content" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				content
+			from silkCodeHistory
+			where silkCodeHistoryID = $P{silkCodeHistoryID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="content" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				content
+			from silkCodeHistory
+			where silkCodeHistoryID = $P{silkCodeHistoryID}
+		]]>
+	</sqlSelect>
+
+	<sqlOperation silkDatabaseID="2" name="commitCode" >
+		<![CDATA[
+			update silkCodeHistory set
+				commitFlag = 1,
+				commitDate = CURRENT_TIMESTAMP,
+				commitUser = $P{silkDevID}
+			where silkCodeHistoryID = $P{silkCodeHistoryID}
+			and silkProjectID = $P{silkProjectID}
+			and commitFlag=0
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="commitCode" >
+		<![CDATA[
+			update silkCodeHistory set
+				commitFlag = 1,
+				commitDate = getDate(),
+				commitUser = $P{silkDevID}
+			where silkCodeHistoryID = $P{silkCodeHistoryID}
+			and silkProjectID = $P{silkProjectID}
+			and commitFlag=0
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="commitCode" >
+		<![CDATA[
+			update silkCodeHistory set
+				commitFlag = 1,
+				commitDate = CURRENT_TIMESTAMP,
+				commitUser = $P{silkDevID}
+			where silkCodeHistoryID = $P{silkCodeHistoryID}
+			and silkProjectID = $P{silkProjectID}
+			and commitFlag=0
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="commitCode" >
+		<![CDATA[
+			update silkCodeHistory set
+				commitFlag = 1,
+				commitDate = CURRENT_TIMESTAMP,
+				commitUser = $P{silkDevID}
+			where silkCodeHistoryID = $P{silkCodeHistoryID}
+			and silkProjectID = $P{silkProjectID}
+			and commitFlag=0
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="commitCode" >
+		<![CDATA[
+			update silkProject set
+				lastSyncID = $P{silkCodeHistoryID}
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="commitCode" >
+		<![CDATA[
+			update silkProject set
+				lastSyncID = $P{silkCodeHistoryID}
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="commitCode" >
+		<![CDATA[
+			update silkProject set
+				lastSyncID = $P{silkCodeHistoryID}
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="commitCode" >
+		<![CDATA[
+			update silkProject set
+				lastSyncID = $P{silkCodeHistoryID}
+			where silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlOperation>
 
 </orm>

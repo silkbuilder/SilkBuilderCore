@@ -11,7 +11,7 @@
 		<column name="projectName" type="S" />
 		<column name="nodeType" type="S" />
 		<column name="content" type="S" />
-		<column name="lastSync" type="D" />
+		<column name="lastSyncID" type="I" secure="1" />
 		<column name="status" type="I" opStatus="1" />
 		<column name="operationAction" type="S" opAction="1" />
 		<column name="operationDate" type="D" opDate="1" />
@@ -43,7 +43,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				pn.sync,
 				0 as editRights
 			from silkProject pj
@@ -65,7 +65,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				pn.sync,
 				case
 					when $P{role}='admin' then 1
@@ -263,7 +263,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				case
 					when $P{role}='admin' then 1
 					when $P{role}='architect' then 1
@@ -440,6 +440,10 @@
 				db.databaseName,
 				pj.projectLevel,
 				pj.projectName,
+				pj.operationDate,
+				coalesce(pj.lastSyncID,0) as lastSyncID,
+				ch.commitDate,
+				ch.commitUser,
 				case when pj.projectLevel=4 then p3.projectUUID else p2.projectUUID end as resourceProjectUUID,
 				case when pj.projectLevel=4 then p3.projectName else p2.projectName end as resourceProjectName,
 				coalesce(pj.content, pn.template) as content,
@@ -461,6 +465,8 @@
 			join silkSystem ps on pj.silkSystemID=ps.silkSystemID
 			left join silkDatabase db on ps.silkDatabaseID=db.silkDatabaseID
 			
+			left join silkCodeHistory ch on pj.lastSyncID = ch.silkCodeHistoryID
+				
 			left join silkProject p1 on pj.parentID=p1.silkProjectID
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
 			left join silkProject p3 on p2.parentID=p3.silkProjectID
@@ -482,6 +488,10 @@
 				db.databaseName,
 				pj.projectLevel,
 				pj.projectName,
+				pj.operationDate,
+				isNull(pj.lastSyncID,0) as lastSyncID,
+				ch.commitDate,
+				ch.commitUser,
 				case when pj.projectLevel=4 then p3.projectUUID else p2.projectUUID end as resourceProjectUUID,
 				case when pj.projectLevel=4 then p3.projectName else p2.projectName end as resourceProjectName,
 				isNull(pj.content, pn.template) as content,
@@ -502,6 +512,8 @@
 			join silkNode pn on pj.nodeType=pn.nodeType
 			join silkSystem ps on pj.silkSystemID=ps.silkSystemID
 			left join silkDatabase db on ps.silkDatabaseID=db.silkDatabaseID
+			
+			left join silkCodeHistory ch on pj.lastSyncID = ch.silkCodeHistoryID
 			
 			left join silkProject p1 on pj.parentID=p1.silkProjectID
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
@@ -524,6 +536,10 @@
 				db.databaseName,
 				pj.projectLevel,
 				pj.projectName,
+				pj.operationDate,
+				coalesce(pj.lastSyncID,0) as lastSyncID,
+				ch.commitDate,
+				ch.commitUser,
 				case when pj.projectLevel=4 then p3.projectUUID else p2.projectUUID end as resourceProjectUUID,
 				case when pj.projectLevel=4 then p3.projectName else p2.projectName end as resourceProjectName,
 				coalesce(pj.content, pn.template) as content,
@@ -544,6 +560,8 @@
 			join silkNode pn on pj.nodeType=pn.nodeType
 			join silkSystem ps on pj.silkSystemID=ps.silkSystemID
 			left join silkDatabase db on ps.silkDatabaseID=db.silkDatabaseID
+			
+			left join silkCodeHistory ch on pj.lastSyncID = ch.silkCodeHistoryID
 			
 			left join silkProject p1 on pj.parentID=p1.silkProjectID
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
@@ -566,6 +584,10 @@
 				db.databaseName,
 				pj.projectLevel,
 				pj.projectName,
+				pj.operationDate,
+				nvl(pj.lastSyncID,0) as lastSyncID,
+				ch.commitDate,
+				ch.commitUser,
 				case when pj.projectLevel=4 then p3.projectUUID else p2.projectUUID end as resourceProjectUUID,
 				case when pj.projectLevel=4 then p3.projectName else p2.projectName end as resourceProjectName,
 				nvl(pj.content, pn.template) as content,
@@ -585,6 +607,8 @@
 			join silkNode pn on pj.nodeType=pn.nodeType
 			join silkSystem ps on pj.silkSystemID=ps.silkSystemID
 			left join silkDatabase db on ps.silkDatabaseID=db.silkDatabaseID
+			
+			left join silkCodeHistory ch on pj.lastSyncID = ch.silkCodeHistoryID
 			
 			left join silkProject p1 on pj.parentID=p1.silkProjectID
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
@@ -927,6 +951,7 @@
 			from silkProject pj
 			left join silkProject p1 on pj.parentID=p1.silkProjectID
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
 			where pj.silkSystemID = $P{silkSystemID}
 			and pj.status=0
 			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
@@ -934,6 +959,7 @@
 			and position(
 					concat('/',$P{silkProjectID},'/') in
 					concat('/',
+						p3.silkProjectID,'/',
 						p2.silkProjectID,'/',
 						p1.silkProjectID,'/',
 						pj.silkProjectID,'/'
@@ -951,6 +977,7 @@
 			from silkProject pj
 			left join silkProject p1 on pj.parentID=p1.silkProjectID
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
 			where pj.silkSystemID = $P{silkSystemID}
 			and pj.status=0
 			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
@@ -958,6 +985,7 @@
 			and charindex(
 					concat('/',$P{silkProjectID},'/'),
 					concat('/',
+						p3.silkProjectID,'/',
 						p2.silkProjectID,'/',
 						p1.silkProjectID,'/',
 						pj.silkProjectID,'/'
@@ -975,6 +1003,7 @@
 			from silkProject pj
 			left join silkProject p1 on pj.parentID=p1.silkProjectID
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
 			where pj.silkSystemID = $P{silkSystemID}
 			and pj.status=0
 			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
@@ -982,6 +1011,7 @@
 			and position(
 					concat('/',$P{silkProjectID},'/') in
 					concat('/',
+						p3.silkProjectID,'/',
 						p2.silkProjectID,'/',
 						p1.silkProjectID,'/',
 						pj.silkProjectID,'/'
@@ -999,6 +1029,7 @@
 			from silkProject pj
 			left join silkProject p1 on pj.parentID=p1.silkProjectID
 			left join silkProject p2 on p1.parentID=p2.silkProjectID
+			left join silkProject p3 on p2.parentID=p3.silkProjectID
 			where pj.silkSystemID = $P{silkSystemID}
 			and pj.status=0
 			and pj.nodeType in ('ORM','DBPR','DBTR','DBVW')
@@ -1006,6 +1037,7 @@
 			and instr(
 					'/' || $P{silkProjectID} || '/',
 					'/' ||
+						p3.silkProjectID || '/' ||
 						p2.silkProjectID || '/' ||
 						p1.silkProjectID || '/' ||
 						pj.silkProjectID || '/'
@@ -1527,7 +1559,7 @@
 				projectName,
 				nodeType,
 				content,
-				lastSync,
+				lastSyncID,
 				status
 			from silkProject
 			where silkSystemID = $P{silkSystemID}
@@ -1607,7 +1639,7 @@
 				pj1.projectName,
 				pj1.nodeType,
 				pj1.content,
-				pj1.lastSync,
+				pj1.lastSyncID,
 				pj1.status
 			from silkProject pj1
 			left join silkNode pn on pj1.nodeType = pn.nodeType
@@ -1797,7 +1829,7 @@
 			select
 				silkProjectID,
 				content,
-				$P{commitFlag,0},
+				0,
 				operationDate,
 				operationUser
 			from silkProject

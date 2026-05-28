@@ -157,7 +157,7 @@
 				 * Database Generator
 				 */
 				if( item.editor==96 ){
-					url = contextPath+"/service/SilkBuilderIDE/database/createDatabase/"+item.silkProjectID+"/"+silkSystemID+"/"+item.projectName;
+					url = contextPath+"/service/SilkBuilderIDE/database/createDatabase/"+item.silkProjectID+"/"+silkSystemID+"/"+item.projectName+"/"+systemName;
 					structureListPage.show();
 				}
 				

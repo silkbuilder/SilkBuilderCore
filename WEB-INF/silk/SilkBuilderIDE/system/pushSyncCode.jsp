@@ -157,8 +157,8 @@
 	/* ----------------------------------------------------------
 	 * File code extraction
 	 */
+	DataProvider historyDP = new DataProvider("/../silk/SilkBuilderIDE/silkCodeHistory", session);
 	DataProvider codeDP = new DataProvider("/../silk/SilkBuilderIDE/silkProject", session);
-	//codeDP.setParameter("silkSystemID", silkSystemID);
 	codeDP.setParameter("silkProjectID", silkProjectID);
 	codeDP.select("sync-files");
 	JSONArray codeList = new JSONArray();
@@ -167,6 +167,7 @@
 		/*
 		 * Get project resources
 		 */
+		String syncSilkProjectID = codeDP.getStringItem(x,"syncSilkProjectID");
 		String filePath = codeDP.getStringItem(x,"filePath");
 		String fileName = codeDP.getStringItem(x,"fileName");
 		String nodeType = codeDP.getStringItem(x,"nodeType");
@@ -177,7 +178,7 @@
 		String fileContent = FileTool.readFile(workspacePath+filePath+fileName);
 
 		/*
-		 * Replace db variables on ORMs
+		 * Replace db variables in ORMs
 		 */
 		if( nodeType.equals("ORM") || nodeType.equals("ORMF") ){
 			if( fileContent.contains("{db}") ) fileContent = fileContent.replaceAll("\\{db\\}", db);
@@ -207,7 +208,7 @@
 
 		/*
 		 * Container List
-		*/
+		 */
 		int isResource = codeDP.getIntItem(x,"isResource");
 		if( isResource==1 ){
 			String containerID = codeDP.getStringItem(x,"containerID");
@@ -220,13 +221,24 @@
 				containerList.add(containerItem);
 			}
 		}
+
+		/*
+		 * Set as commit
+		 */
+		historyDP.setParameter("silkProjectID", syncSilkProjectID);
+		if( historyDP.select("lastID")>0 ){
+			String silkCodeHistoryID = historyDP.getItem("silkCodeHistoryID");
+			historyDP.setParameter("silkCodeHistoryID", silkCodeHistoryID);
+			historyDP.exec("commitCode");
+		}
+		
 	}
 	data.put("containerList", containerList);
 	data.put("codeList", codeList);
 
 	/* ----------------------------------------------------------
 	 * Email template extraction
-	 * Checks if it is pro version
+	 * Checks if it is a pro version
 	 */
 	File file = new File(systemPath+"WEB-INF/silk/SilkBuilderIDE/silkDeveloper.orm");
 	if( file.exists() ){

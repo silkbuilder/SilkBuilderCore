@@ -144,7 +144,7 @@
 			systemForm.silkDatabaseID.load();
 		});
 
-		systemForm.silkDatabaseID.on("filterLoad", function(item){
+		systemForm.silkDatabaseID.on("filterLoad", function(index, item){
 			return systemForm.databaseList.getValue().indexOf( ","+item.silkDatabaseID+"," ) > -1;
 		});
 		

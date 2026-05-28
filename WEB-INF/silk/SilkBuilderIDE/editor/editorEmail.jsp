@@ -233,8 +233,6 @@
 				structure["head"] = headDP.selectObject.data[0];
 				structure["body"] = bodyDP.selectObject.data;
 
-				
-				
 				contentDP.setParameter("silkProjectID", silkProjectID);
 				contentDP.setParameter("content", JSON.stringify(structure));
 				contentDP.exec("updateContent");

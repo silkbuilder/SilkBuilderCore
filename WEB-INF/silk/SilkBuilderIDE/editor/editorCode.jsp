@@ -16,11 +16,15 @@
 
 <silk:App title="Code Editor" timeout="false" >
 
+	<script src="{contextPath}/silk/silkDev.min.js?loadTime={loadTime}"></script>
+	<link rel="stylesheet" href="{contextPath}/resources/diff2html/diff2html.min.css?loadTime={loadTime}">
+	<script src="{contextPath}/resources/diff2html/diff2html-ui.min.js?loadTime={loadTime}"></script>
+	
 	<style>
 	
 		#editorBar {
 			padding: 0px !important;
-		}
+		}s
 	
 		#editorBar button {
 			padding: 1px !important;
@@ -32,11 +36,27 @@
 	
 		.title {
 			float: left;
-			xmargin-top: 5px;
 			padding-left: 5px;
 			font-weight: 400;
 			font-size: 1em;
 		}
+
+		#changeModal .modal-header {
+			padding: 8px 6px;
+		}
+
+		#changeModal .modal-title {
+			font-size: 1em;
+		}
+
+		#silkCodeHistoryID, #silkCodeHistoryID_input {
+			width: 350px !important;
+		}
+
+		.d2h-dark-color-scheme {
+			background-color: #212529 !important;
+		}
+		
 	</style>
 	
     <style>
@@ -89,6 +109,7 @@
 				<span id="editorTitle" ></span>&nbsp;&nbsp;
 			</div>
 			<div>
+				<silk:Button icon="fa-solid fa-code-compare" targetPage="changeModal" cssClass="btn-lg btn-link silk-navbar-button" renderIf="${isPro}" />
 				<silk:Button id="infoBt" dock="right" cssClass="btn-lg btn-link silk-navbar-button" cssStyle="color:#FFFFFF;font-family:monospace;" renderIf="${editRight}" />
 				<silk:Button id="searchBt" icon="fa-solid fa-magnifying-glass fa-lg" dock="right" cssClass="btn-lg btn-link silk-navbar-button" cssStyle="color:#FFFFFF" renderIf="${editRight}" />
 				<silk:Button id="saveBt" icon="fa-solid fa-save fa-lg" dock="right" cssClass="btn-lg btn-link silk-navbar-button" cssStyle="color:#FFFFFF" renderIf="${editRight}" />
@@ -98,8 +119,23 @@
 	</nav>
 
 	<div id="silkEditor"></div>
+
+	<silk:Modal id="changeModal" title="Code Changes" size="full" bodyMargin="false" renderIf="${isPro}" >
+		<silk:Input id="fullCode" type="checkbox" label="Full" mode="true" />
+		<silk:Input id="silkCodeHistoryID" type="select" dataSource="changeListDP" labelColumn="operationDate" mode="true" />
+		<silk:Input id="viewType" type="select" dataSource="viewTypeDP" valueColumn="value" labelColumn="label" mode="true" />
+		<div id="diffBox"></div>
+	</silk:Modal>
 	
 	<silk:DataProvider id="contentDP" servicePath="/SilkBuilderIDE/system/ContentOutlet" selectName="content" />
+	
+	<silk:DataProvider id="changeListDP" servicePath="/SilkBuilderIDE/system/CodeHistoryOutlet" selectName="list" autoLoad="false" renderIf="${isPro}" />
+	<silk:DataProvider id="changeCodeDP" servicePath="/SilkBuilderIDE/system/CodeHistoryOutlet" selectName="content" autoLoad="false" renderIf="${isPro}" />
+
+	<silk:DataProvider id="viewTypeDP" >
+		0:Side by Side
+		1:Line by Line
+	</silk:DataProvider>
 	
 	<silk:JScode>
 	
@@ -185,19 +221,24 @@
 		
 		contentDP.on("afterSelect", function(action){
 
-			//Check Edit Rights.
-			
+			// Load content		
 			item = contentDP.getItem();
-			
-			var codeString = item.content;
-			item.content = replaceAll(item.content, atob("PCU="), atob("PGphdmE+"));
-			item.content = replaceAll(item.content, atob("JT4="), atob("PC9qYXZhPg=="));
-			
-			silkEditor.setCode( item.content );
+			silkEditor.setCode( javaIn(item.content) );
 			resizeEditor();
+
 			projectPath = contentDP.getItem().projectPath;
 			projectPath = replaceAll(projectPath,"//","/");
-			$("#editorTitle").html( projectPath );
+
+			let titleText = projectPath;
+			if( contentDP.getItem().commitDate!="" ){
+				titleText += " | Last Sync: " +	getFormattedValue(contentDP.getItem().commitDate,"datetime");
+			}
+
+			$("#editorTitle").html(titleText);
+
+			<silk:If renderIf="${isPro}" >
+				changeModal.setTitle( "Changes for "+projectPath );
+			</silk:If>
 			
 			/*
 			 * Show editor after being loaded.
@@ -209,14 +250,13 @@
 		<silk:If renderIf="${editRight}" >
 		
 			saveBt.on("click", function(){
-				if( silkEditor.getCode() != item.content ){
-					item.content = silkEditor.getCode();
-					item.content = replaceAll(item.content, atob("PGphdmE+"), atob("PCU="));
-					item.content = replaceAll(item.content, atob("PC9qYXZhPg==") , atob("JT4="));
-					
+				let content = javaOut(silkEditor.getCode())
+				if( content != item.content ){
 					contentDP.setParameter("silkProjectID", silkProjectID );
-					contentDP.setParameter("content", item.content);
+					contentDP.setParameter("content", content);
 					contentDP.exec("updateContent");
+					item.content = content;
+					
 				}
 				saveBt.hide();
 				toSave = false;
@@ -290,12 +330,69 @@
 		
 		</silk:If >
 
-
-		
 		$(window).resize(function(){
 			resizeEditor();
 		});
 		
 	</silk:JQcode>
 
+	<silk:JQcode  renderIf="${isPro}" >
+
+		changeModal.$header.find(".silk-navbar-right").append(fullCode.$input);
+		fullCode.$input.css("margin","2px 5px 0px 0px");
+		fullCode.$input.css("width","150px");
+		
+		changeModal.$header.find(".silk-navbar-right").append(silkCodeHistoryID.$input);
+		silkCodeHistoryID.$input.css("margin","2px 5px 0px 0px");
+		silkCodeHistoryID.$dataField.css("padding","0px 36px 0px 12px");
+		silkCodeHistoryID.$dataField.css("width","350px !important");
+
+		changeModal.$header.find(".silk-navbar-right").append(viewType.$input);
+		viewType.$input.css("margin","2px 0px 0px 0px");
+		viewType.$dataField.css("padding","0px 36px 0px 12px");
+		
+		changeModal.on("beforeShow", function(){
+			changeListDP.select();
+		});
+
+		silkCodeHistoryID.on("filterLoad", function(index,item){
+			changeListDP.setItemAt(index,"operationDate", 
+				getFormattedValue(item.operationDate,"datetime")+" "+item.fullName
+			);
+			return true;
+		});
+		
+		silkCodeHistoryID.on("change", function(){
+			changeCodeDP.select();
+		});
+
+		viewType.on("change", function(){
+			changeCodeDP.select();
+		});
+
+		fullCode.on("change", function(){
+			changeCodeDP.select();
+		});
+		
+		changeListDP.on("beforeSelect", function(){
+			this.setParameter("silkProjectID", silkProjectID );
+			this.setParameter("silkCodeHistoryID", contentDP.getItem().lastSyncID );
+		});
+		
+		changeListDP.on("afterSelect", function(){
+			changeCodeDP.select();
+		});
+
+		changeCodeDP.on("beforeSelect", function(){
+			this.setParameter("silkCodeHistoryID", silkCodeHistoryID.getValue() );
+		});
+
+		changeCodeDP.on("afterSelect", function(){
+			let content = javaIn(changeCodeDP.getItem().content);
+			silkShowDiff(content, silkEditor.getCode(), viewType.getValue(), fullCode.getValue()==1);
+		});
+		
+	</silk:JQcode>
+
+	
 </silk:App>

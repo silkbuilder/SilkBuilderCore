@@ -63,7 +63,7 @@
 	<div id="codeBox" ></div>
 
 	<silk:DataProvider id="projectDP" servicePath="/SilkBuilderIDE/database/DatabaseOutlet" selectName="databaseProject" />
-	<silk:DataProvider id="databaseDP" servicePath="/SilkBuilderIDE/database/DatabaseOutlet" selectName="targetDatabaseList" />
+	<silk:DataProvider id="databaseDP" servicePath="/SilkBuilderIDE/database/DatabaseOutlet" selectName="targetDatabaseList" loadingOrder="2" />
 	<silk:DataProvider id="objectDB" servicePath="/SilkBuilderIDE/system/ProjectOutlet" selectName="dbObjectList" pkColumn="projectName" />
 
 	<silk:JScode>
@@ -83,9 +83,14 @@
 			this.setParameter("silkSystemID", "${urlParameter1}");
 		});
 
-		silkDatabaseID.on("afterLoad", function(){
+		databaseDP.on("afterLoad", function(){
 			$(window.frameElement).removeClass("silk-hidden");
-			setTimeout( function(){silkDatabaseID.openSelect();},500);
+			if( databaseDP.size()==1 ){
+				silkDatabaseID.setValue( databaseDP.getItem().silkDatabaseID );
+				buildSQL();
+			}else{
+				setTimeout( function(){silkDatabaseID.openSelect();},500);
+			}
 		});
 
 		silkDatabaseID.on("change", function(){
@@ -103,7 +108,6 @@
 		objectDB.on("beforeSelect", function(){
 			this.setParameter("silkSystemID", "${urlParameter1}");
 			this.setParameter("silkProjectID", "${urlParameter0}");
-			//this.setParameter("silkProjectID", "215D157779977BD5");
 		});
 
 		objectDB.on("afterSelect", function(){
@@ -116,12 +120,31 @@
 				}
 				
 				
-				objectDB.getItemAt(x)["order"] = 100;
+				objectDB.getItemAt(x)["order"] = 0;
+				objectDB.getItemAt(x)["fkParent"] = [];
  			}
 		});
 	</silk:JQcode>
 
 	<silk:JQcode>
+
+		sortSQL = function(){
+			for(x=0; x<objectDB.size(); x++){
+				var item = objectDB.getItemAt(x);
+				if( item.fkParent.length > 0 ){
+					for(const parentTable of  item.fkParent){
+						const parentIndex = objectDB.getIndex(parentTable);
+						if( x < parentIndex ){
+							const element = objectDB.selectObject.data.splice(x,1)[0];
+							objectDB.selectObject.data.splice(parentIndex,0,element);
+							sortSQL();
+							return;
+						}
+					}
+				}
+			}
+		}
+		
 		buildSQL = function(){
 
 			var errorMsg = "";
@@ -141,7 +164,7 @@
 						if( ifUndefined(column.fkTable,"")!="" ){
 							const index = objectDB.getIndex(column.fkTable);
 							if( index > -1 ){
-								objectDB.getItemAt(index).order--;
+								objectDB.getItemAt(x).fkParent.push(column.fkTable);
 							}else{
 								errorMsg += "-- Table:"+item.json.table.tableName+". Column:"+column.columnName+": <red>FK Table does not exist: "+column.fkTable+"</red>\n";
 							}
@@ -150,9 +173,9 @@
 					
 				} else {
 					objectDB.getItemAt(x)["sql"] = ifUndefined(item.json["sql"+silkDatabaseID.getValue()],"-- No Provided").trim()+"\n\n";
-					if( item.nodeType=="DBTR" ) objectDB.getItemAt(x).order = objectDB.getItemAt(x).order+10;
-					if( item.nodeType=="DBPR" ) objectDB.getItemAt(x).order = objectDB.getItemAt(x).order+20;
-					if( item.nodeType=="DBVW" ) objectDB.getItemAt(x).order = objectDB.getItemAt(x).order+30;
+					if( item.nodeType=="DBTR" ) objectDB.getItemAt(x).order = objectDB.getItemAt(x).order+1000;
+					if( item.nodeType=="DBPR" ) objectDB.getItemAt(x).order = objectDB.getItemAt(x).order+2000;
+					if( item.nodeType=="DBVW" ) objectDB.getItemAt(x).order = objectDB.getItemAt(x).order+3000;
 				}
 			};
 			
@@ -160,12 +183,14 @@
 				return l.order - r.order;
 			});
 
+			sortSQL();
+			
 			fileTitle = projectDP.getItem().projectName+" "+(new Date()).toISOString().substr(0,16);
 			fileTitle = fileTitle.replaceAll(" ","_")
 			
 			code = "";
 			code += "-- ======================================================\n";
-			code += "-- System: "+projectDP.getItem().systemName+"\n";
+			code += "-- System: ${urlParameter3}\n";
 			if( projectDP.getItem().projectLevel>0 ){
 				code += "-- Project: /";
 				if( projectDP.getItem().projectLevel==2 ){

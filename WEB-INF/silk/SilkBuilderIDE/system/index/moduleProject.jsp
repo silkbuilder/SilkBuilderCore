@@ -76,7 +76,7 @@
 		/*
 		 * Action after the form mode change
 		 */
-		projectForm.on("afterModeChange", function(mode){0
+		projectForm.on("afterModeChange", function(mode){
 			
 			/*
 			 * If the form is in read-only mode, it exits
@@ -93,14 +93,16 @@
 			/*
 			 * Save the previous extension to use it during renaming.
 			 */
-			previousExtension = ifUndefined(projectForm.nodeType.getItem().extension,"");
+			if( projectForm.getAction()=="update" ){
+				previousExtension = ifUndefined(projectForm.nodeType.getItem().extension,"");
+			}
 														 
 		});
 		
 		/*
 		 * Filter the note type options to show based on the parent filter column
 		 */
-		projectForm.nodeType.on("filterLoad", function(item){
+		projectForm.nodeType.on("filterLoad", function(index, item){
 			if( projectForm.getAction()=="insert" ){
 				if( item.parentFilter.indexOf(projectList.getSelectedItem().nodeType)>-1 ) return true;
 			}else{

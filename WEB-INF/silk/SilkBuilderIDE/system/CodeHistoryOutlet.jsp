@@ -8,7 +8,8 @@
 	response.setContentType("application/json");
 %>
 <jsp:include page="../../../silk/service/view/dataProvider.jsp" >
-	<jsp:param name="ormPath" value="../silk/SilkBuilderIDE/silkProject" />
-	<jsp:param name="accessRights" value=",S,I,U,D," />
-	<jsp:param name="selectList" value=",projectList,projectList-recordSync,ormList,ormContent,dbObjectList,sync-files,sync-email," />
+	<jsp:param name="ormPath" value="../silk/SilkBuilderIDE/silkCodeHistory" />
+	<jsp:param name="accessRights" value=",S," />
+	<jsp:param name="columnList" value=",silkCodeHistoryID," />
+	<jsp:param name="selectList" value=",content,list," />
 </jsp:include>

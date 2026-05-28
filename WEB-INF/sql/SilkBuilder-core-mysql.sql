@@ -66,7 +66,7 @@ create table silkProject (
 	projectName varchar(100),
 	nodeType varchar(10),
 	content text,
-	lastSync timestamp,
+	lastSyncID int,
 	status tinyint default 0,
 	operationAction varchar(20),
 	operationDate timestamp,
@@ -175,9 +175,11 @@ create table silkCodeHistory (
 	silkCodeHistoryID int primary key auto_increment,
 	silkProjectID int,
 	content text,
-	commitFlag tinyint default 0,
 	operationDate timestamp,
-	operationUser int 
+	operationUser int,
+	commitFlag tinyint default 0,
+	commitDate timestamp,
+	commitUser int 
 );
 
 create index silkCodeHistory_silkProjectID on silkCodeHistory(silkProjectID);

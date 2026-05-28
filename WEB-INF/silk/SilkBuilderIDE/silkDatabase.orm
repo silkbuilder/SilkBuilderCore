@@ -117,7 +117,7 @@
 				pj1.projectLevel
 			from silkProject pj1
 			left join silkProject pj2 on pj1.parentID = pj2.silkProjectID
-			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			left join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
 			where pj1.silkProjectID = $P{silkProjectID}
 		]]>
 	</sqlSelect>
@@ -131,7 +131,7 @@
 				pj1.projectLevel
 			from silkProject pj1
 			left join silkProject pj2 on pj1.parentID = pj2.silkProjectID
-			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			left join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
 			where pj1.silkProjectID = $P{silkProjectID}
 		]]>
 	</sqlSelect>
@@ -145,7 +145,7 @@
 				pj1.projectLevel
 			from silkProject pj1
 			left join silkProject pj2 on pj1.parentID = pj2.silkProjectID
-			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			left join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
 			where pj1.silkProjectID = $P{silkProjectID}
 		]]>
 	</sqlSelect>
@@ -159,7 +159,7 @@
 				pj1.projectLevel
 			from silkProject pj1
 			left join silkProject pj2 on pj1.parentID = pj2.silkProjectID
-			join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
+			left join silkSystem sy on pj1.silkSystemID = sy.silkSystemID
 			where pj1.silkProjectID = $P{silkProjectID}
 		]]>
 	</sqlSelect>

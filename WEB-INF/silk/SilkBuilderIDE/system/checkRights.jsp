@@ -3,7 +3,11 @@
     this work is licensed under the O'Saasy License Agreement, a copy of which can be
     found in the LICENSE file in the root directory of this project or at https://silkbuilder.com/core-license.
 --%>
-<%@ page import="com.oopsclick.silk.dbo.*" %>
+<%@ page import="
+	com.oopsclick.silk.dbo.*,
+	com.oopsclick.silk.utils.SilkPath,
+	java.io.*"
+%>
 <%
 
 	/*
@@ -37,6 +41,17 @@
 	String editRight = "false";
 	if( writeRoles.indexOf(developerRole)>-1 ) editRight = "true";
 	request.setAttribute("editRight",editRight);
+
+	/*
+	 * Check if it is core.
+	 */
+	String systemPath = SilkPath.getRealPath(request.getServletContext());
+	File file = new File(systemPath+"WEB-INF/silk/SilkBuilderIDE/silkDeveloper.orm");
+	if( file.exists() ){
+		request.setAttribute("isPro",1);
+	}else{
+		request.setAttribute("isPro",0);
+	}
 	
 	/*
 	 * Load the list of the system's database
