@@ -30,7 +30,7 @@
 		</silk:Header>
 		<silk:Content>
 			
-			<silk:Table id="projectList" dataSource="projectDP" cssClass="table-hover no-border" targetPage="editorPage" header="none"
+			<silk:Table id="projectList" dataSource="projectDP" cssClass="table-hover no-border" header="none"
 				collapsedLevel="<%= levelLimit %>"
 				deleteBranch="true"
 			>
@@ -73,7 +73,7 @@
 			}
 			return "";
 		}
-				
+		
 	</silk:JScode>
 	
 	<silk:JQcode>
@@ -85,7 +85,6 @@
 		});
 
 		exitBt.on("click", function(){
-			console.log("me");
 			if( tabEditor.size()==0  ){
 				window.location.href = "{contextPath}";
 			}else{

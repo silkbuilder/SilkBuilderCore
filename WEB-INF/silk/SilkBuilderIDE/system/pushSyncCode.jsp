@@ -227,7 +227,7 @@
 		 */
 		historyDP.setParameter("silkProjectID", syncSilkProjectID);
 		if( historyDP.select("lastID")>0 ){
-			String silkCodeHistoryID = historyDP.getItem("silkCodeHistoryID");
+			String silkCodeHistoryID = historyDP.getStringItem("silkCodeHistoryID");
 			historyDP.setParameter("silkCodeHistoryID", silkCodeHistoryID);
 			historyDP.exec("commitCode");
 		}

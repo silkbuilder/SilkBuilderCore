@@ -73,6 +73,9 @@
 			}else{
 				tabEditor.removeTab(tabIndex);
 			}
+
+			if( tabEditor.getTabs().length==0 ) structureListPage.show();
+			
 		};
 		
 	</silk:JScode>
@@ -195,6 +198,8 @@
 			}else{
 				tabEditor.setIndex(index);
 			}
+
+			editorPage.show();
 		}
 		
 		tabEditor.on("add,click",function(index){

@@ -98,7 +98,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				pn.sync,
 				0 as editRights
 			from silkProject pj
@@ -120,7 +120,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				pn.sync,
 				case
 					when $P{role}='admin' then 1
@@ -153,7 +153,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				pn.sync,
 				0 as editRights
 			from silkProject pj
@@ -175,7 +175,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				pn.sync,
 				case
 					when $P{role}='admin' then 1
@@ -208,7 +208,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				pn.sync,
 				0 as editRights
 			from silkProject pj
@@ -230,7 +230,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				pn.sync,
 				case
 					when $P{role}='admin' then 1
@@ -293,7 +293,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				case
 					when $P{role}='admin' then 1
 					when $P{role}='architect' then 1
@@ -323,7 +323,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				case
 					when $P{role}='admin' then 1
 					when $P{role}='architect' then 1
@@ -353,7 +353,7 @@
 				pn.iconName,
 				pn.iconColor,
 				pn.recordOrder,
-				pj.lastSync,
+				pj.lastSyncID,
 				case
 					when $P{role}='admin' then 1
 					when $P{role}='architect' then 1
@@ -1579,7 +1579,7 @@
 				projectName,
 				nodeType,
 				content,
-				lastSync,
+				lastSyncID,
 				status
 			from silkProject
 			where silkSystemID = $P{silkSystemID}
@@ -1599,7 +1599,7 @@
 				projectName,
 				nodeType,
 				content,
-				lastSync,
+				lastSyncID,
 				status
 			from silkProject
 			where silkSystemID = $P{silkSystemID}
@@ -1619,7 +1619,7 @@
 				projectName,
 				nodeType,
 				content,
-				lastSync,
+				lastSyncID,
 				status
 			from silkProject
 			where silkSystemID = $P{silkSystemID}
@@ -1667,7 +1667,7 @@
 				pj1.projectName,
 				pj1.nodeType,
 				pj1.content,
-				pj1.lastSync,
+				pj1.lastSyncID,
 				pj1.status
 			from silkProject pj1
 			join silkNode pn on pj1.nodeType = pn.nodeType
@@ -1692,7 +1692,7 @@
 				pj1.projectName,
 				pj1.nodeType,
 				pj1.content,
-				pj1.lastSync,
+				pj1.lastSyncID,
 				pj1.status
 			from silkProject pj1
 			join silkNode pn on pj1.nodeType = pn.nodeType
@@ -1717,7 +1717,7 @@
 				pj1.projectName,
 				pj1.nodeType,
 				pj1.content,
-				pj1.lastSync,
+				pj1.lastSyncID,
 				pj1.status
 			from silkProject pj1
 			join silkNode pn on pj1.nodeType = pn.nodeType
