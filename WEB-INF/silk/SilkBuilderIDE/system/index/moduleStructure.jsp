@@ -27,6 +27,7 @@
 			Systems
 			<silk:Button id="exitBt" icon="home" dock="left" />
 			<silk:Button id="projectInfoBt" icon="fa-solid fa-circle-info" dock="right" targetPage="projectFormPage" renderIf="admin,architect one-in ${developerRole}" />
+			<silk:Button icon="fa-solid fa-magnifying-glass" dock="right" targetPage="searchListPage" />
 		</silk:Header>
 		<silk:Content>
 			

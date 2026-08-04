@@ -205,10 +205,12 @@ form .cm-line {
 .modal .silk-navbar-button,
 .modal .silk-navbar-button:focus {
 	color: var(--bs-light);
+	border: 0px solid;
 }
 
 .modal .silk-navbar-button:hover {
 	color: var(--bs-white);
+	border: 0px solid;
 }
 
 .modal .nav-link.active {

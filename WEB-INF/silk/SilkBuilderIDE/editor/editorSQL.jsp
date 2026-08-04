@@ -138,7 +138,7 @@
 	
 	<silk:Modal id="docModal" size="full" bodyMargin="false" >
 		<silk:ModalBody>
-			<silk:Input id="docField" type="html" htmlConfigFile="/ckeditor-conf/bar-readonly.js" mode="true" />
+			<silk:Input id="docField" type="html" mode="true" />
 			<silk:Button id="closeBt" label="Close" />
 		</silk:ModalBody>
 	</silk:Modal>

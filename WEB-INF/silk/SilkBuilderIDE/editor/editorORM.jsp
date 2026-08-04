@@ -28,29 +28,10 @@
 	
 	<style>
 		
-		xxxxhr {
-			border-color: #446C26;
-		}
-		
-		.xxxxCodeMirror {
-			border-radius: 4px;
-			border: 4px solid white;
-			padding: 0px 0px;
-			font-size: 0.95em;
-		}
-		
-		.xxxctab-pane {
-			padding: 10px 2px;
-		}
-		
 		.silk-content .group {
 			font-size: 1.2em;
 			padding-bottom: 8px;
 			margin-bottom: 0px;
-		}
-		
-		.xxxxbottom-line {
-			border-bottom: 2px solid #91a1a9;
 		}
 		
 		.table-active > td {
@@ -66,7 +47,7 @@
 		}
 			
 	</style>
-	
+
 	<silk:JScode>
 		var formPage = "B";
 		

@@ -71,6 +71,9 @@ create table silkProject (
 	operationAction varchar(20),
 	operationDate timestamp,
 	operationUser int,
+	lockStatus smallint default 0,
+	lockUser int,
+	lockDate timestamp,
 	foreign key (silkSystemID) references silkSystem (silkSystemID) on delete Cascade 
 );
 

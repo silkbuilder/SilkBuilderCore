@@ -16,6 +16,9 @@
 		<column name="operationAction" type="S" opAction="1" />
 		<column name="operationDate" type="D" opDate="1" />
 		<column name="operationUser" type="I" secure="1" opUser="1" />
+		<column name="lockStatus" type="I" />
+		<column name="lockUser" type="I" secure="1" />
+		<column name="lockDate" type="D" />
 		<column name="silkDeveloperID" type="I" secure="1" />
 		<column name="role" type="S" />
 		<column name="projectID" type="I" secure="1" />
@@ -619,6 +622,142 @@
 			and p1.status=0
 			and p2.status=0
 			and p3.status=0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="contentSearch" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSyncID,
+				pn.sync,
+				case
+				 	when $P{role}='admin' then 1
+				 	when $P{role}='architect' then 1
+				 	when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+				 	else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL','ORM')
+			and pj.content like concat('%',$P{search},'%')
+			and pj.projectLevel>0
+			and pj.status=0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="contentSearch" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSyncID,
+				pn.sync,
+				case
+				 	when $P{role}='admin' then 1
+				 	when $P{role}='architect' then 1
+				 	when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+				 	else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL','ORM')
+			and pj.content like concat('%',$P{search},'%')
+			and pj.projectLevel>0
+			and pj.status=0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="contentSearch" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSyncID,
+				pn.sync,
+				case
+				 	when $P{role}='admin' then 1
+				 	when $P{role}='architect' then 1
+				 	when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+				 	else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL','ORM')
+			and pj.content like concat('%',$P{search},'%')
+			and pj.projectLevel>0
+			and pj.status=0
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="contentSearch" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				pj.silkProjectID,
+				pj.silkProjectID as pathID,
+				pj.projectUUID,
+				pj.silkSystemID,
+				pj.parentID,
+				pj.projectLevel,
+				pj.projectName,
+				pj.nodeType,
+				pn.editor,
+				pn.parent,
+				pn.iconName,
+				pn.iconColor,
+				pn.recordOrder,
+				pj.lastSyncID,
+				pn.sync,
+				case
+				 	when $P{role}='admin' then 1
+				 	when $P{role}='architect' then 1
+				 	when $P{role}='developer' and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL') then 1
+				 	else 0
+				end as editRights
+			from silkProject pj
+			join silkNode pn on pj.nodeType=pn.nodeType
+			where pj.silkSystemID = $P{silkSystemID}
+			and pj.nodeType in ('APP','PUB','CSF','CSFP','MOD','EMAIL','ORM')
+			and pj.content like concat('%',$P{search},'%')
+			and pj.projectLevel>0
+			and pj.status=0
 		]]>
 	</sqlSelect>
 
@@ -1775,6 +1914,58 @@
 		]]>
 	</sqlSelect>
 
+	<sqlSelect name="projectItemLockStatus" silkDatabaseID="2" >
+		<![CDATA[
+			select
+				case when pj.lockUser=$P{silkDevID} then 0 else pj.lockStatus end as lockStatus,
+				pj.lockUser,
+				dv.fullName,
+				pj.lockDate
+			from silkProject pj
+			join silkDeveloper dv on pj.lockUser = dv.silkDeveloperID
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectItemLockStatus" silkDatabaseID="1" >
+		<![CDATA[
+			select
+				case when pj.lockUser=$P{silkDevID} then 0 else pj.lockStatus end as lockStatus,
+				pj.lockUser,
+				dv.fullName,
+				pj.lockDate
+			from silkProject pj
+			join silkDeveloper dv on pj.lockUser = dv.silkDeveloperID
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectItemLockStatus" silkDatabaseID="3" >
+		<![CDATA[
+			select
+				case when pj.lockUser=$P{silkDevID} then 0 else pj.lockStatus end as lockStatus,
+				pj.lockUser,
+				dv.fullName,
+				pj.lockDate
+			from silkProject pj
+			join silkDeveloper dv on pj.lockUser = dv.silkDeveloperID
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
+	<sqlSelect name="projectItemLockStatus" silkDatabaseID="4" >
+		<![CDATA[
+			select
+				case when pj.lockUser=$P{silkDevID} then 0 else pj.lockStatus end as lockStatus,
+				pj.lockUser,
+				dv.fullName,
+				pj.lockDate
+			from silkProject pj
+			join silkDeveloper dv on pj.lockUser = dv.silkDeveloperID
+			where pj.silkProjectID = $P{silkProjectID}
+		]]>
+	</sqlSelect>
+
 	<sqlOperation silkDatabaseID="2" name="updateContent" >
 		<![CDATA[
 			update silkProject set
@@ -1910,6 +2101,238 @@
 			update silkProject set
 				content = replace(content, $P{oldUUID}, $P{newUUID})
 			where silkSystemID = $P{silkSystemID}
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" when="after" action="delete" >
+		<![CDATA[
+			update silkProject pj
+			join (
+				select
+					inner_pj.silkProjectID
+				from silkProject inner_pj
+				left join silkProject p1 on inner_pj.parentID=p1.silkProjectID
+				left join silkProject p2 on p1.parentID=p2.silkProjectID
+				left join silkProject p3 on p2.parentID=p3.silkProjectID
+				where coalesce(inner_pj.status,0)+coalesce(p1.status,0)+coalesce(p2.status,0)+coalesce(p3.status,0) > 0
+			) as pl on pj.silkProjectID = pl.silkProjectID
+			set pj.status = 1
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" when="after" action="delete" >
+		<![CDATA[
+			update silkProject set
+				status = 1
+			where silkProjectID in (
+				select
+					pj.silkProjectID
+				from silkProject pj
+				left join silkProject p1 on pj.parentID=p1.silkProjectID
+				left join silkProject p2 on p1.parentID=p2.silkProjectID
+				left join silkProject p3 on p2.parentID=p3.silkProjectID
+				where coalesce(pj.status,0)+coalesce(p1.status,0)+coalesce(p2.status,0)+coalesce(p3.status,0) > 0
+			)
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" when="after" action="delete" >
+		<![CDATA[
+			update silkProject set
+				status = 1
+			where silkProjectID in (
+				select
+					pj.silkProjectID
+				from silkProject pj
+				left join silkProject p1 on pj.parentID=p1.silkProjectID
+				left join silkProject p2 on p1.parentID=p2.silkProjectID
+				left join silkProject p3 on p2.parentID=p3.silkProjectID
+				where coalesce(pj.status,0)+coalesce(p1.status,0)+coalesce(p2.status,0)+coalesce(p3.status,0) > 0
+			)
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" when="after" action="delete" >
+		<![CDATA[
+			update silkProject set
+				status = 1
+			where silkProjectID in (
+				select
+					pj.silkProjectID
+				from silkProject pj
+				left join silkProject p1 on pj.parentID=p1.silkProjectID
+				left join silkProject p2 on p1.parentID=p2.silkProjectID
+				left join silkProject p3 on p2.parentID=p3.silkProjectID
+				where coalesce(pj.status,0)+coalesce(p1.status,0)+coalesce(p2.status,0)+coalesce(p3.status,0) > 0
+			)
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="projectItemLock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 1,
+				lockUser = $P{silkDevID},
+				lockDate = CURRENT_TIMESTAMP
+			where silkProjectID = $P{silkProjectID}
+			and lockStatus = 0;
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="projectItemLock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 1,
+				lockUser = $P{silkDevID},
+				lockDate = getDate()
+			where silkProjectID = $P{silkProjectID}
+			and lockStatus = 0;
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="projectItemLock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 1,
+				lockUser = $P{silkDevID},
+				lockDate = CURRENT_TIMESTAMP
+			where silkProjectID = $P{silkProjectID}
+			and lockStatus = 0;
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="projectItemLock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 1,
+				lockUser = $P{silkDevID},
+				lockDate = SYSTIMESTAMP
+			where silkProjectID = $P{silkProjectID}
+			and lockStatus = 0;
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="projectItemUnlock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 0,
+				lockUser = null,
+				lockDate = null
+			where silkProjectID = $P{silkProjectID}
+			and lockUser = $P{silkDevID}
+			and lockStatus = 1
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="projectItemUnlock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 0,
+				lockUser = null,
+				lockDate = null
+			where silkProjectID = $P{silkProjectID}
+			and lockUser = $P{silkDevID}
+			and lockStatus = 1
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="projectItemUnlock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 0,
+				lockUser = null,
+				lockDate = null
+			where silkProjectID = $P{silkProjectID}
+			and lockUser = $P{silkDevID}
+			and lockStatus = 1
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="projectItemUnlock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 0,
+				lockUser = null,
+				lockDate = null
+			where silkProjectID = $P{silkProjectID}
+			and lockUser = $P{silkDevID}
+			and lockStatus = 1
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="projectUpdateLockDate" >
+		<![CDATA[
+			update silkProject set
+				lockDate = CURRENT_TIMESTAMP
+			where projectUUID in ($V{writeEditors})
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="projectUpdateLockDate" >
+		<![CDATA[
+			update silkProject set
+				lockDate = getDate()
+			where projectUUID in ($V{writeEditors})
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="projectUpdateLockDate" >
+		<![CDATA[
+			update silkProject set
+				lockDate = CURRENT_TIMESTAMP
+			where projectUUID in ($V{writeEditors})
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="projectUpdateLockDate" >
+		<![CDATA[
+			update silkProject set
+				lockDate = SYSTIMESTAMP
+			where projectUUID in ($V{writeEditors})
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="2" name="projectClearLock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 0,
+				lockUser = null,
+				lockDate = null
+			where TIMESTAMPDIFF(MINUTE, lockDate, CURRENT_TIMESTAMP)>5
+			and not lockUser is null
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="1" name="projectClearLock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 0,
+				lockUser = null,
+				lockDate = null
+			where DATEDIFF(MINUTE, lockDate, GETDATE()) > 5
+			and lockUser is not null;
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="3" name="projectClearLock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 0,
+				lockUser = null,
+				lockDate = null
+			where EXTRACT(EPOCH from (CURRENT_TIMESTAMP - lockDate)) / 60 > 5
+			and lockUser is not null;
+		]]>
+	</sqlOperation>
+
+	<sqlOperation silkDatabaseID="4" name="projectClearLock" >
+		<![CDATA[
+			update silkProject set
+				lockStatus = 0,
+				lockUser = null,
+				lockDate = null
+			where (SYSDATE - lockDate) * 24 * 60 > 5
+			and lockUser is not null;
 		]]>
 	</sqlOperation>
 

@@ -42,8 +42,12 @@
 	</silk:Page>
 	
 	<silk:JScode>
-		
+
+		/*
+		 * Close tab
+		 */
 		closeTab = function(e){
+			
 			var tabID = $(e).parent().attr("id").replace("_tab","");
 			var tabIndex = -1;
 			
@@ -63,15 +67,19 @@
 				silk.confirmation(
 					function(index){
 						tabEditor.removeTab(index);
+						projectDP.setParameter("silkProjectID", tabID.replace("T",""));
+						projectDP.exec("projectItemUnlock");
 					},
 					tabIndex,
 					"Unsaved Editor",
-					"Do you want to close this unsaved editor?",
-					"Close",
+					"Do you want to close this unsaved editor? Your changes may be lost.",
+					"Close Editor",
 					"question"
 				);
 			}else{
 				tabEditor.removeTab(tabIndex);
+				projectDP.setParameter("silkProjectID", tabID.replace("T",""));
+				projectDP.exec("projectItemUnlock");
 			}
 
 			if( tabEditor.getTabs().length==0 ) structureListPage.show();
@@ -83,7 +91,10 @@
 	<silk:JQcode>
 
 		tabEditor.$tab.prepend( $("#editorPage_backBt") );
-		
+
+		/*
+		 * Open a new tab editor, or focus it if it is already open.
+		 */
 		openTab = function(item){
 			
 			var tabID = "T"+item.silkProjectID;
@@ -170,7 +181,7 @@
 				console.log(url);
 				
 				const closeTabIcon = "<a href='#' onCLick='closeTab(this)'><i class='close-icon fa-solid fa-square-xmark text-danger'></i></a>";
-				const tabContent = "<iframe id='frame-"+tabID+"' src='"+url+"' style='width:100%; border: 0px;' class='editor-frame silk-hidden' ></iframe>"+
+				const tabContent = "<iframe id='frame-"+tabID+"' src='"+url+"' style='width:100%; border: 0px;' class='editor-frame silk-hidden' allow='clipboard-write; clipboard-read' ></iframe>"+
 					"<div style='margin:10px;' >Loading...</div>"+
 					"<div class='progress' role='progressbar' aria-label='Animated striped example' aria-valuenow='100' aria-valuemin='0' aria-valuemax='100' style='margin:10px;' >"+
 						"<div class='progress-bar progress-bar-striped progress-bar-animated bg-info' style='width: 100%'></div>"+
@@ -184,6 +195,7 @@
 				
 				tabEditor.getSelectedTab()["silkProjectID"] = item.silkProjectID;
 				tabEditor.getSelectedTab()["nodeType"] = item.nodeType;
+				tabEditor.getSelectedTab()["projectUUID"] = item.projectUUID;
 
 				if( item.nodeType=="MOD" ){
 					tabEditor.getSelectedTab()["tagProjectUUID"] = projectDP.getIndexItem(item.parentID).projectUUID;
@@ -191,9 +203,8 @@
 					tabEditor.getSelectedTab()["tagProjectUUID"] = item.projectUUID;
 				}
 
-				setTimeout(function(){
-					
-				},3000);
+				//setTimeout(function(){
+				//},3000);
 				
 			}else{
 				tabEditor.setIndex(index);
@@ -242,7 +253,7 @@
 		$(window).resize(function(){
 			adjustEditor();
 		});
-		
+
 	</silk:JQcode>
 	
 </silk:Module >

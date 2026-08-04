@@ -7,21 +7,41 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <silk:App>
 	
-	<script src="{contextPath}/silk/silkDev.min.js?loadTime={loadTime}"></script>
+	<script src="{contextPath}/silk/silkDev.min.js?{loadTime}"></script>
+	<script src="{contextPath}/resources/mermaid/mermaid.tiny.js?{loadTime}"></script>
+	<script src="{contextPath}/resources/mermaid/svg-pan-zoom.min.js?{loadTime}"></script>
+	<script>
+		mermaid.initialize({
+			tartOnLoad: false,
+			suppressErrorRendering: true,
+			parseError: function(err, hash) {
+				console.error("Intercepted a Mermaid syntax error:", err, hash);
+			}
+		});
+	</script>
 
 	<style>
 		
 		#silkDatabaseID {
 			margin: 0px !important;
 		}
-		
+
+		#diagramBox {
+			background-color: white;
+			height: calc(100dvh - 55px);
+		}
+
 		#codeBox {
 			font-family: monospace, monospace;
 			font-size: 0.9em;
-			padding: 20px;
-			margin-top: 50px;
+			padding: 5px;
 		}
 
+		#wrapper {
+			overflow: scroll;
+			height: calc(100dvh - 110px);
+		}
+		
 		.code-block {
 			list-style-type: none;
 			counter-reset: css-counter 0;
@@ -45,22 +65,37 @@
 			padding: 2px;
 			color: yellow;
 		}
+
+		#options {
+			margin-top: 5px;
+		}
 		
 	</style>
-	
-	<nav id="editorBar" class="navbar fixed-top bg-primary" style="display: block;" >
-		<div>
-			Generate Database Script
-			&nbsp;&nbsp;
-			<silk:Input id="silkDatabaseID" type="select" dataSource="databaseDP" mode="true" width="200px"
-				valueColumn="silkDatabaseID" labelColumn="databaseName" prompt="Select..."
-			/>
-			<silk:Button id="downloadBt" icon="fa-solid fa-file-arrow-down fa-lg" cssClass="silk-navbar-button" />
-			<silk:Button id="clipboardBt" icon="fa-solid fa-clipboard fa-lg" cssClass="silk-navbar-button" />
-		</div>	
-	</nav>
 
-	<div id="codeBox" ></div>
+	<silk:Tab id="options">
+
+		<silk:TabItem title="Diagram&nbsp;&nbsp;<i class='fa-solid fa-arrows-rotate reload-page' ></i>" >
+			<div id="diagramBox" ></div>
+		</silk:TabItem>
+
+		<silk:TabItem title="Stript">
+			<nav id="editorBar" class="navbar xxfixed-top bg-primary" style="display: block; padding:4px;" >
+				<div>
+					Generate Database Script
+					&nbsp;&nbsp;
+					<silk:Input id="silkDatabaseID" type="select" dataSource="databaseDP" mode="true" width="200px"
+						valueColumn="silkDatabaseID" labelColumn="databaseName" prompt="Select..."
+					/>
+					<silk:Button id="downloadBt" icon="fa-solid fa-file-arrow-down fa-lg" cssClass="silk-navbar-button" />
+					<silk:Button id="clipboardBt" icon="fa-solid fa-clipboard fa-lg" cssClass="silk-navbar-button" />
+				</div>	
+			</nav>
+			<div id="wrapper">
+				<div id="codeBox" ></div>
+			</div>
+		</silk:TabItem>
+		
+	</silk:Tab>
 
 	<silk:DataProvider id="projectDP" servicePath="/SilkBuilderIDE/database/DatabaseOutlet" selectName="databaseProject" />
 	<silk:DataProvider id="databaseDP" servicePath="/SilkBuilderIDE/database/DatabaseOutlet" selectName="targetDatabaseList" loadingOrder="2" />
@@ -72,10 +107,92 @@
 		var fileTitle = "";
 	</silk:JScode>
 
+	<silk:JScode>
+		// Tracks the current svg-pan-zoom instance so it can be destroyed
+		// before a new one is created (prevents duplicate instances/listeners
+		// when renderMermaid is called again, e.g. to load a new diagram).
+		window.__pz = null;
+		
+		function renderMermaid(elementId, newDiagramText) {
+			const el = document.getElementById(elementId);
+			if (!el) return;
+		
+			if (newDiagramText !== undefined) {
+				el.removeAttribute('data-processed');
+				el.textContent = newDiagramText;
+			}
+
+			try {
+				mermaid.init(undefined, el);
+			} catch (error) {
+				// Catches catastrophic runtime failures (unrelated to basic syntax issues)
+				console.error("Catastrophic rendering failure:", error);
+			}
+		
+			// mermaid.tiny.js's init() is not reliably synchronous — the <svg> node
+			// can exist before Mermaid has finished writing its final viewBox.
+			// Poll until a real, non-empty viewBox shows up before wiring up pan-zoom.
+			let attempts = 0;
+			const maxAttempts = 40; // ~2 seconds at 50ms intervals
+		
+			const waitForRealSvg = () => {
+				const svgEl = el.querySelector('svg');
+				const viewBox = svgEl ? svgEl.getAttribute('viewBox') : null;
+		
+				if (!svgEl || !viewBox || viewBox === '0 0 0 0') {
+					attempts++;
+					if (attempts < maxAttempts) {
+						setTimeout(waitForRealSvg, 50);
+					} else {
+						console.error('renderMermaid: gave up waiting for a valid viewBox after', maxAttempts, 'attempts');
+					}
+					return;
+				}
+		
+				svgEl.setAttribute('width', el.clientWidth || 800);
+				svgEl.setAttribute('height', el.clientHeight - 10);
+				svgEl.removeAttribute('style');
+		
+				// Defensive cleanup: remove any stray control groups left behind by a
+				// previous/duplicate instance before creating a fresh one.
+				svgEl.querySelectorAll('.svg-pan-zoom-control').forEach(g => g.remove());
+				if (window.__pz) {
+					window.__pz.destroy();
+					window.__pz = null;
+				}
+		
+				const instance = svgPanZoom(svgEl, {
+					zoomEnabled: true,
+					panEnabled: true,
+					controlIconsEnabled: true,
+					fit: true,
+					center: true
+				});
+				window.__pz = instance;
+		
+				const controlGroup = svgEl.querySelector('.svg-pan-zoom-control');
+				if (controlGroup) {
+					controlGroup.style.transformBox = 'view-box';
+					controlGroup.style.transformOrigin = 'top right';
+					controlGroup.style.transform = 'translate(calc(100% - 120px), 10px)';
+				}
+			};
+		
+			waitForRealSvg();
+		}
+	</silk:JScode>
+	
 	<silk:JQcode>
 		projectDP.on("beforeSelect", function(){
 			this.setParameter("silkProjectID", "${urlParameter0}");
 		});
+
+		options.on("click", function(index, tabID, element){
+			if( $(element).hasClass("reload-page") ){
+				window.location.reload();
+			};
+		});
+		
 	</silk:JQcode>
 	
 	<silk:JQcode>
@@ -85,6 +202,9 @@
 
 		databaseDP.on("afterLoad", function(){
 			$(window.frameElement).removeClass("silk-hidden");
+
+			buildDiagram();
+			
 			if( databaseDP.size()==1 ){
 				silkDatabaseID.setValue( databaseDP.getItem().silkDatabaseID );
 				buildSQL();
@@ -145,8 +265,54 @@
 			}
 		}
 		
-		buildSQL = function(){
+		buildDiagram = function(){
+			
+			let tableText = "";
+			let joinText = "erDiagram\n";
+			let tableName = "";
+			
+			for(x=0; x<objectDB.size(); x++){
+				let item = objectDB.getItemAt(x);
+				if( item.nodeType=="ORM" ){
+					let object = JSON.parse(item.content);
+					tableName = object.table.tableName;
+					tableText += "\t"+tableName+" {\n";
+					
+					for( const column of object.column ){
 
+						let columnName = column.columnName;
+						let columnType = column.columnTypeLabel;
+
+						columnType = columnType.replace("/","");
+						columnType = columnType.replace(" (String)","")
+						columnType = columnType.replace("Public ID","PublicID")
+						
+						tableText += "\t\t"+columnName+" "+columnType;
+
+						if( ifUndefined(column.pk,0)==1 ){
+							tableText += " PK";
+						}
+						
+						if( ifUndefined(column.fkTable,"")!=""  ){
+							joinText += "\t"+column.fkTable+" ||--o{ "+tableName+" : "+column.fkColumn+"\n";
+							tableText += " FK";
+						}
+
+						tableText += "\n";
+
+					}
+					tableText += "\t}\n";
+				}
+			}
+
+			tableText = joinText.trim()+"\n"+tableText;
+			tableText = tableText.replaceAll("{dbTable}",tableName);
+
+			renderMermaid("diagramBox", tableText);
+			
+		}
+		
+		buildSQL = function(){
 			var errorMsg = "";
 			
 			for(x=0; x<objectDB.size(); x++){
@@ -239,6 +405,10 @@
 			$("#codeBox").html(renderCode(code));
 		}
 
+	</silk:JQcode>
+
+	<silk:JQcode>
+		
 		downloadBt.on("click", function(){
 			if( silkDatabaseID.getValue()=="" ) return;
 			downloadText(code,"text/plain",fileTitle+".sql");

@@ -115,7 +115,7 @@
 	}
 	
 	/*
-	 * Creaters source file if it does not exist.
+	 * Creates source file if it does not exist.
 	 */
 	File sourcefile = new File(sourcePath);
 	if (!sourcefile.exists()) {
@@ -128,7 +128,7 @@
 	if( nodeType.equals("ORM") || nodeType.equals("ORMF") ) content = Builder.ormToXml(content, nodeType);
 
 	/*
-	 * Proces Outlets
+	 * Process Outlets
 	 */
 	if( nodeType.equals("OSL") || nodeType.equals("OSLP") ) content = Builder.outletToJsp(content);
 
@@ -136,7 +136,7 @@
 	 * Process mail templates
 	 */
 	if( nodeType.equals("EMAIL") ){
-		Builder.emailToDatabase(content,silkSystemID, session);
+		Builder.emailToDatabase(content, silkSystemID, session);
 		return;
 	}
 

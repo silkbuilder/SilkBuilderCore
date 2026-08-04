@@ -5,7 +5,7 @@
 --%>
 <silk:Module >
 	
-	<silk:Page id="projectFormPage" stage="A2"
+	<silk:Page id="projectFormPage" stage="A2" returnPage="structureListPage"
 		smLayout="A2:*:b"
 		mdLayout="A2:*:b"
 		rgLayout="A2:300px:b,B1"

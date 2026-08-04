@@ -176,6 +176,11 @@
 		$("#silkEditor").on("keydown", function(key){
 
 			/*
+			 * Check copy keyboard and cancel it.
+			 */
+			if ((key.ctrlKey || key.metaKey) && key.code === 'KeyC') return;
+			
+			/*
 			* Ignored Keys
 			* 16 Shift
 			* 17 Control
@@ -186,13 +191,13 @@
 			* 34 PageDown
 			* 35 End
 			* 36 Home
-			* 37 ArrowLeft
-			* 38 ArowUp
+			* 37 Arrow Left
+			* 38 Arrow Up
 			* 39 ArrowRight
 			* 40 ArrowDown
 			* 45 Insert
-			* 91 Meta Left
-			* 92 Meta Right
+			* 91 Meta Left - Mac Command
+			* 92 Meta Right 
 			*/
 			if( isIn(key.which,16, 17, 18, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 91,92 ) ) return;
 				
@@ -256,10 +261,10 @@
 					contentDP.setParameter("content", content);
 					contentDP.exec("updateContent");
 					item.content = content;
-					
 				}
 				saveBt.hide();
 				toSave = false;
+				silkEditor.editor.focus();
 			});
 			
 			// Saves content into files

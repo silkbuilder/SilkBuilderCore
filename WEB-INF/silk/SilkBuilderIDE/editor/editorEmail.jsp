@@ -46,21 +46,37 @@
 		>
 			<silk:Header>
 				Body
-				<!-- silk:Button id="getMimeBt" icon="fa-solid fa-file-arrow-down" dock="right" / -->
 			</silk:Header>
 			<silk:Content>
 
 				<silk:Tab id="langTab" />
 				
-				<silk:Form id="bodyForm" dataSource="bodyDP" buttonTarget="none,bodyPage,none" buttonTest="${editRight}" >
+				<silk:Form id="bodyForm" dataSource="bodyDP" buttonTarget="none,bodyPage,none" buttonTest="${editRight}" toggleEdit="!attachmentAddBt" >
 					<silk:Input id="subject" type="text" label="Subject" required="true" />
-					<silk:Input id="message" type="html" label="Message Body" required="true"
-						htmlConfigFile="/ckeditor-conf/bar-developer.js"
-					/>
-					<silk:Input id="langID" type="hidden" />
+					<silk:Input id="message" type="html" label="Message Body" required="true" htmlToolbar="regular" height="450px" />
+					<silk:Input id="attachment" type="external" />
 				</silk:Form>
-			</silk:Content>		
+
+				<silk:Table id="attachmentList" dataSource="attachmentDP" title="Attachment Links" header="inline" >
+					<silk:TableHeader>
+						<silk:Button id="attachmentAddBt" icon="add" dock="right" />
+					</silk:TableHeader>
+					<silk:TableBody>
+						<silk:Column title="ID" width="50px" >{attachmentID}</silk:Column>
+						<silk:Column title="File Path" >{filePath}</silk:Column>
+						<silk:Column more="true" targetPage="attachmentModal" />
+					</silk:TableBody>
+				</silk:Table>
+					
+			</silk:Content>
 		</silk:Page>
+
+		<silk:Modal id="attachmentModal" title="Attachment Link" >
+			<silk:Form id="attachmentForm" dataSource="attachmentList" insertBt="attachmentAddBt" buttonTarget="none,attachmentModal" >
+				<silk:Input id="attachmentID" type="text" label="Identifier" required="true" autocomplete="false" />
+				<silk:Input id="filePath" type="text" label="Path" required="true" />
+			</silk:Form>
+		</silk:Modal>
 		
 	</silk:Screen>
 
@@ -71,6 +87,7 @@
 	
 	<silk:DataProvider id="headDP" pkColumn="silkEmailID" />
 	<silk:DataProvider id="bodyDP" pkColumn="langID" />
+	<silk:DataProvider id="attachmentDP" pkColumn="attachmentID" />
 	
 	<silk:JScode>
 		var silkProjectID = "${urlParameter0}";
@@ -83,9 +100,7 @@
 	</silk:JScode>
 	
 	<silk:JQcode>
-		bodyPage.$content.css("padding-bottom",0)
-		bodyForm.$form.css("padding-bottom","0");
-		bodyForm.message.$input.css("margin-bottom","0")
+		bodyForm.$form.css("padding-bottom", "5px");
 	</silk:JQcode>
 
 	<silk:JQcode id="lang">
@@ -100,19 +115,19 @@
 				langTab.addTab("langTab"+x, item.enName, undefined, false );
 			}
 			langTab.setIndex(0);
+			bodyDP.setSelectedIndex(0);
 		});
 
 		langTab.on("click", function(index){
 			bodyDP.setSelectedIndex(index);
 			bodyForm.load();
 		});
-		
+
 	</silk:JQcode>
 	
 	<silk:JQcode>
 
 		templateDP.on("beforeSelect", function(){
-			console.log(silkSystemUUID);
 			this.setParameter("silkSystemUUID", silkSystemUUID);
 		});
 
@@ -124,21 +139,19 @@
 
 	<silk:JQcode>
 
+		bodyForm.on("afterLoad", function(){
+			let json = bodyForm.attachment.getValue();
+			attachmentDP.loadJSON(json);
+		});
+		
 		bodyForm.on("afterModeChange", function(){
-			resizeMessage();
 			toSave = bodyForm.getMode();
 		});
 
 		silk.on("resize", function(){
-			resizeMessage();
+			//
 		});
-		
-		resizeMessage = function(){
-			setTimeout( function(){
-				bodyForm.message.$input.find(".cke_contents").height(bodyForm.$form.parent().height()-200);
-			},200);
-		}
-		
+				
 	</silk:JQcode>
 	
 	<silk:JQcode>
@@ -166,6 +179,9 @@
 			
 		});
 
+		/*
+		 * Parses the JSON content
+		 */
 		loadEmail = function(){
 
 			/*
@@ -184,8 +200,7 @@
 			 * Loading the body
 			 */
 			bodyDP.selectObject.data = structure.body;
-			//bodyDP.load();
-			
+
 			/*
 			 * Loading language into body
 			 */
@@ -194,63 +209,78 @@
 				let bodyItem = {
 					langID : item.langID,
 					subject : "",
-					message: ""
+					message: "",
+					attachment: ""
 				};
 				let contentItem = bodyDP.getIndexItem(item.langID);
 				if( contentItem != undefined ){
 					bodyItem.subject = contentItem.subject;
 					bodyItem.message = contentItem.message;
+					bodyItem.attachment = contentItem.attachment;
 				}
 				bodyArray.push(bodyItem);
 			}
 			bodyDP.selectObject.data = bodyArray;
+
+			/*
+			 * Initialize record index
+			 */
+			for( x=0; x<langDP.size(); x++ ){
+				bodyDP.selectObject.data[x]["_recordIndex"] = x;
+			}
+			
 			bodyDP.setSelectedIndex(0);
 			bodyDP.load();
 
 		};
-		
-		getNodeValue = function(doc,tag,mode){
-			if( mode==undefined ) mode=0;
-			if( doc.getElementsByTagName(tag).length>0 ){
-				if( mode==0 ) return doc.getElementsByTagName(tag)[0].childNodes[0].nodeValue;
-				if( mode==1 ) return doc.getElementsByTagName(tag)[0].textContent.trim()
-			}
-			return "";
-		};
-		
-		<silk:If renderIf="read != ${developerRole}" >
-			
-			headDP.on("afterUpdate",function(){
-				saveStructure();
-			});
-			
-			bodyDP.on("afterUpdate",function(){
-				saveStructure();
-			});
-			
-			saveStructure = function(){
-				var structure = new Object();
-				structure["head"] = headDP.selectObject.data[0];
-				structure["body"] = bodyDP.selectObject.data;
 
-				contentDP.setParameter("silkProjectID", silkProjectID);
-				contentDP.setParameter("content", JSON.stringify(structure));
-				contentDP.exec("updateContent");
-			};
-
-			contentDP.on("afterExec", function(){
-				var url = "{contextPath}/service/SilkBuilderIDE/system/saveCode";
-				$.ajax({
-					url: url,
-					data: { silkProjectID: silkProjectID },
-					success: function(data) {},
-					error: function() {},
-					type: 'POST'
-				});
-			});
-		
-		</silk:If>
-			
 	</silk:JQcode>
 	
+	<silk:JQcode renderIf="read != ${developerRole}" >
+			
+		headDP.on("afterUpdate",function(){
+			saveStructure();
+		});
+		
+		bodyDP.on("afterUpdate",function(){
+			saveStructure();
+		});
+		
+		saveStructure = function(){
+			var structure = new Object();
+			structure["head"] = headDP.selectObject.data[0];
+			structure["body"] = bodyDP.selectObject.data;
+
+			console.log( bodyDP.selectObject.data[0] );
+			console.log( structure["body"][0] );
+			
+			contentDP.setParameter("silkProjectID", silkProjectID);
+			contentDP.setParameter("content", JSON.stringify(structure));
+			contentDP.exec("updateContent");
+		};
+
+		contentDP.on("afterExec", function(){
+			var url = "{contextPath}/service/SilkBuilderIDE/system/saveCode";
+			$.ajax({
+				url: url,
+				data: { silkProjectID: silkProjectID },
+				success: function(data) {},
+				error: function() {},
+				type: 'POST'
+			});
+		});
+		
+	</silk:JQcode>
+
+	<silk:JQcode>
+		attachmentDP.on("afterLoad", function(action,operation){
+			bodyForm.attachment.setValue(attachmentDP.getJSON());
+			bodyDP.setSelectedIndex(langTab.getTabIndex());
+		});
+
+		attachmentForm.on("showInsertBt,showUpdateBt,showDeleteBt", function(){
+			return bodyForm.getMode();
+		});
+		
+	</silk:JQcode>
 </silk:App>

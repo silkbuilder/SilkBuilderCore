@@ -40,6 +40,39 @@
 	String writeRoles = request.getParameter("writeRoles");
 	String editRight = "false";
 	if( writeRoles.indexOf(developerRole)>-1 ) editRight = "true";
+
+	/*
+	 * Operate the lock process
+	 */
+	DataProvider projectDP = new DataProvider("/../silk/SilkBuilderIDE/silkProject",session);
+
+	/*
+	 * Clear records with lock dates more than 5 min late
+	 */
+	projectDP.exec("projectClearLock");
+
+	/*
+	 * Lock the project if it is unlocked
+	 */
+	projectDP.setParameter("silkProjectID", silkProjectID);
+	projectDP.exec("projectItemLock");
+
+	/*
+	 * Load project lock info
+	 */
+	projectDP.select("projectItemLockStatus");
+	int lockStatus = projectDP.getIntItem("lockStatus");
+	request.setAttribute("lockStatus", lockStatus);
+	request.setAttribute("lockUser", projectDP.getStringItem("fullName"));
+
+	/*
+	 * If project is locked, editing is changed to false.
+	 */
+	if( lockStatus==1 ) editRight = "false";
+	
+	/*
+	 * Set the attribute 
+	 */
 	request.setAttribute("editRight",editRight);
 
 	/*

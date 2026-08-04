@@ -12,94 +12,73 @@
 	<jsp:param name="writeRoles" value="admin,architect" />
 </jsp:include>
 
-<silk:App title="Code Editor" timeout="false" >
-
-	<script src="{contextPath}/resources/ckeditor/adapters/jquery.js"></script>
+<silk:App title="Code Editor" timeout="false" jsLib="HTML-Editor" >
 
 	<style>
 
-		html, body {
-			height: 100%;
+		#htmlEditor {
+			height: calc(100vh - 5px);
+			display: block;
+			overflow: hidden;
+		}
+
+		.ql-toolbar {
+			border-color: #495057 !important;
 		}
 		
-		.title {
-			line-height: 1.7em;
-			font-size: 1.2em;
+		.ql-container {
+			height: calc(100vh - 40px);
 		}
 		
 	</style>
+
+	<silk:Button id="saveBt" icon="save" label="Save" cssClass="btn-primary btn-sm" width="75px" renderIf="${editRight}" />
+	<div id="htmlEditor" ></div>
 	
-	<form>
-		<textarea id="htmlEditor"></textarea>
-	</form>
-	
-	<silk:DataProvider id="contentDP" servicePath="/SilkBuilderIDE/system/ContentOutlet" selectName="content" autoLoad="false" />
+	<silk:DataProvider id="contentDP" servicePath="/SilkBuilderIDE/system/ContentOutlet" selectName="content" />
 	
 	<silk:JScode>
-		var saveBt = new Button();
 		var silkProjectID = "${urlParameter0}";
+		var quillEditor;
 	</silk:JScode>
 
 	<silk:JQcode>
-	
-		// Configuring html Editor
-		$htmlEditor = $('#htmlEditor');
-		$htmlEditor.ckeditor({
-			customConfig: "{contextPath}/ckeditor-conf/bar-developer.js?a=<%= (new Date()).getTime() %>"
-			<silk:If renderIf="${editRight}" negation="true"  >
-				,readOnly: true
-			</silk:If>
-		});
-		
-		CKEDITOR.on( 'instanceReady', function( ev ){
-			resizeEditor();
-			
-			contentDP.load();
-			
-			// Create a new command with the desired exec function
-			var overridecmd = new CKEDITOR.command(ev.editor, {
-				exec: function(editor){
-					// Replace this with your desired save button code
-					saveData();
-				}
-			});
 
-			// Replace the old save's exec function with the new one
-			ev.editor.commands.save.exec = overridecmd.exec;
-			
-		} )
-		
-		resizeEditor = function(){
-			CKEDITOR.instances["htmlEditor"].resize("100%",$("body").height());
-		}
-	
 		<silk:If renderIf="${editRight}" >
-			CKEDITOR.instances["htmlEditor"].on( 'key', function( event, editor, data ) {
-				$(".cke_button__save").css("background-color","red");
-			} );
+			
+			const myToolbar = [
+				['bold', 'italic', 'underline', 'strike'],
+				[{ 'align': [] }],
+				[{ 'header': [1, 2, 3, 4, 5, 6, false] }, 'code-block'],
+				['link', 'image'],			
+				[{ 'list': 'ordered'}, { 'list': 'bullet' }],
+				[{ 'script': 'sub'}, { 'script': 'super' }],
+				[{ 'indent': '-1'}, { 'indent': '+1' }],			
+				[{ 'color': [] }, { 'background': [] }],			
+				['table-better'],			
+				['clean']
+			];
+			
+			quillEditor = new QuillEditor($("#htmlEditor"),"", myToolbar);
+			//$(".ql-container").height(500);
+			$(".ql-formats").last().append(saveBt.$button);
+			
 		</silk:If>
-		
-		$(window).resize(function(){
-			resizeEditor();
-		});
-		
 		
 		contentDP.on("beforeSelect", function(){
 			this.setParameter("silkProjectID", silkProjectID );
 		});
 		
-		
 		contentDP.on("afterSelect", function(action){
-
-			//Check Edit Rights.
-			
 			var item = contentDP.getItem();
 
-			CKEDITOR.instances["htmlEditor"].setData( item.content );
-			var projectPath = contentDP.getItem().projectPath;
-			projectPath = replaceAll(projectPath,"//","/");
-			$("#cke_1_top").prepend("<span class='title'>&nbsp;"+projectPath+"</span><br/>");
-			resizeEditor();
+			<silk:If renderIf="${editRight}" >
+				quillEditor.setHtml(item.content);
+				$(".ql-editor").scrollTop(0);
+			</silk:If>
+			<silk:If renderIf="${editRight}" negation="true" >
+				$("#htmlEditor").html(item.content);
+			</silk:If>
 			
 			/*
 			 * Show editor after being loaded.
@@ -107,23 +86,17 @@
 			$(window.frameElement).removeClass("silk-hidden");
 			
 		});
-		
+
 		<silk:If renderIf="${editRight}" >
-			saveData = function(){
-				var data = CKEDITOR.instances["htmlEditor"].getData();
+			saveBt.on("click", function(){
+				var data = quillEditor.getHtml();
 				if( data != contentDP.getItem("content") ){
 					contentDP.setParameter("silkProjectID", silkProjectID);
 					contentDP.setParameter("content", data);
 					contentDP.exec("updateContent");
-					$(".cke_button__save").css("background-color","");
 					contentDP.setItem("content",data);
 				}
-			}
-		</silk:If>
-		<silk:If renderIf="${editRight}" negation="true" >
-			saveData = function(){
-				silk.alert("Warning","You have read ony access.","warning");
-			}
+			});
 		</silk:If>
 			
 	</silk:JQcode>

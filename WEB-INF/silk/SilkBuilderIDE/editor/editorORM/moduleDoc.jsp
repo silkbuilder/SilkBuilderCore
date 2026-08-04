@@ -6,35 +6,24 @@
 <silk:Module >
 
 	<style>
-		#closeBt {
-			border: 1px solid gray;
-			padding: 4px;
-			float: right;
-		}
-		
-		#closeBt .silk-button-label {
-			font-size: 1.2em;
+		#docModal .modal-body {
+			overflow-y: clip !important;
 		}
 	</style>
 
-	<silk:Modal id="docModal" size="full" bodyMargin="false" >
-		<silk:Input id="docField" type="html" htmlConfigFile="/ckeditor-conf/bar-readonly.js" mode="true" />
-		<silk:Button id="closeBt" label="Close" />
+	<silk:Button id="printBt" icon="print" cssClass="btn-link silk-navbar-button btn-lg border-0" />
+	<silk:Modal id="docModal" title="ORM Documentation" size="full" bodyMargin="false" >
+		<iframe id="docField" style="width:100%; background-color:white; border: none;" ></iframe>
 	</silk:Modal>
 
 
 	<silk:JQcode>
-	
-		docField.$dataField.attr("class","");
-		docField.$dataField.parent().attr("class","");
-		docField.$dataField.parent().css("margin","0");
-	
+
+		docModal.$header.find(".silk-navbar-right").append(printBt.$button);
+		
 		docModal.on("show", function(){
-			
-			$(".cke_top").append($("#closeBt"));
-			
-			$("#cke_1_contents").height(docModal.$body.height());
-			$("#cke_1_bottom").hide();
+
+			$("#docField").height($("#docField").parent().outerHeight());
 			
 			var html = "";
 
@@ -74,18 +63,38 @@
 			 * Logical
 			 */
 			html += "<h2>Logical</h2>";
+
+			html += "<h3>Columns</h3>";
+			html += "<table>";
+			html += "<tr>";
+				html += "<th>Name</th>";
+				for( y=0; y<databaseDP.size(); y++ ){
+					let dbIndex = databaseDP.getItemAt(y).silkDatabaseID;
+					if( tableForm.editorDatabaseID.getValue().indexOf(dbIndex)>-1 ){
+						html += "<th>"+databaseDP.getItemAt(y).databaseName+"</th>";
+					}
+				}
+			html += "</tr>";
+			
+			for( var x=0; x < columnDP.size(); x++ ){
+				html += "<tr>";
+					html += "<td style='vertical-align:top;'><p>"+columnDP.getItemAt(x,"columnName")+"</p></td>";
+
+					for( y=0; y<databaseDP.size(); y++ ){
+						let dbIndex = databaseDP.getItemAt(y).silkDatabaseID;
+						if( tableForm.editorDatabaseID.getValue().indexOf(dbIndex)>-1 ){
+							html += "<td style='vertical-align:top;'><p>"+columnDP.getItemAt(x,"sqlType"+dbIndex)+"</p></td>";
+						}
+					}
+				html += "</tr>";
+			}
+			html += "</table>";
+
+			html += "<h3>Properties</h3>";
 			html += "<table>";
 			html += "<tr>";
 				html += "<th></th>";
 				html += "<th>Name</th>";
-
-				for( y=0; y<databaseDP.size(); y++ ){
-					let dbIndex = databaseDP.getItemAt(y).silkDatabaseID;
-					if( tableForm.editorDatabaseID.getValue().indexOf(dbIndex)>-1 ){
-						html += "<th>"+databaseDP.getItemAt(y).shortName+"</th>";
-					}
-				}
-			
 				html += "<th>Default</th>";
 				html += "<th>Not&nbsp;Null</th>";
 				html += "<th>Unique</th>";
@@ -98,15 +107,9 @@
 				html += "<tr>";
 					html += "<td style='vertical-align:top;'><p>";
 						if( columnDP.getItemAt(x,"pk")=="1" ) html += "PK";
+						if( ifUndefined(columnDP.getItemAt(x,"fkTable"),"")!="" ) html += "FK";
 					html += "</p></td>";
 					html += "<td style='vertical-align:top;'><p>"+columnDP.getItemAt(x,"columnName")+"</p></td>";
-
-					for( y=0; y<databaseDP.size(); y++ ){
-						let dbIndex = databaseDP.getItemAt(y).silkDatabaseID;
-						if( tableForm.editorDatabaseID.getValue().indexOf(dbIndex)>-1 ){
-							html += "<td style='vertical-align:top;'><p>"+columnDP.getItemAt(x,"sqlType"+dbIndex)+"</p></td>";
-						}
-					}
 					
 					html += "<td style='vertical-align:top;'><p>"+ifUndefined(columnDP.getItemAt(x,"defaultValue"+databaseID),"")+"</p></td>";
 					html += "<td style='vertical-align:top;'><p align='center'>"
@@ -123,7 +126,7 @@
 				html += "</tr>";
 			}
 			html += "</table>";
-
+			
 			/*
 			 * Physical
 			 */
@@ -197,19 +200,28 @@
 			}
 
 			html = html.replaceAll("\{dbTable\}", tableDP.getItem().tableName);
+
+			html = "<html><head>"+
+					"<link rel='stylesheet' href='{contextPath}/silk/print.css?"+(new Date()).getTime()+"' >"+
+				"</head><body>"+html+"</body></html>";
 			
-			docField.setValue(html);			
-			
-			setTimeout(function(){
-				CKEDITOR.instances.docField_input.execCommand('maximize');
-			}, 100);
+			const iframe = document.getElementById('docField');
+			iframe.srcdoc = html;
 			
 		});
-		
-		closeBt.on("click",function(){
-			CKEDITOR.instances.docField_input.execCommand('maximize');
-			docModal.close();
-		});
+
+	printBt.on("click", function(){
+	    const iframe = document.getElementById("docField");
+	    
+	    // Target the iframe's internal window context
+	    const iframeWindow = iframe.contentWindow;
+	    
+	    // Focus the frame (highly recommended for multi-browser support)
+	    iframeWindow.focus();
+	    
+	    // Trigger the print dialog
+	    iframeWindow.print();
+	});
 		
 	</silk:JQcode>
 

@@ -155,7 +155,12 @@
 	</silk:Page>
 
 	<silk:Modal id="alterModal" title="Alter Table SQL" size="large" closeButton="true" bodyMargin="false" >
-		<silk:Input id="alterCode" type="sql" />
+		<silk:ModalBody>
+			<silk:Input id="alterCode" type="sql" />
+		</silk:ModalBody>
+		<silk:ModalFooter>
+			<silk:Button id="copyAlterBt" label="Copy to Clipboard" />
+		</silk:ModalFooter>
 	</silk:Modal>
 
 	<silk:DataProvider id="columnDP" pkColumn="id" />
@@ -316,5 +321,11 @@
 			operationSQLTab.setIndex(index,false);
 			authorizationSQLTab.setIndex(index,false);
 		});
+
+		copyAlterBt.on("click", function(){
+			navigator.clipboard.writeText(alterCode.getValue());
+			silk.toast("Alter code copied to clipboard");
+		});
+		
 	</silk:JQcode>
 </silk:Module>
